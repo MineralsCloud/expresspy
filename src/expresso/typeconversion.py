@@ -17,6 +17,8 @@ def fortranfloat(v: float) -> str:
 
 
 def fortrancomplex(v: complex) -> str:
+    if not isinstance(v, complex):
+        raise TypeError("Expected input to be a complex!")
     return "CMPLX({}, {})".format(fortranfloat(v.real), fortranfloat(v.imag))
 
 
@@ -29,4 +31,6 @@ def fortranbool(v: bool) -> str:
 
 
 def fortranstr(v: str) -> str:
-    return '{}'.format(v)
+    if not isinstance(v, str):
+        raise TypeError("Expected input to be a string!")
+    return v
