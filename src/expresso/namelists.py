@@ -192,7 +192,7 @@ class IonsNamelist(Namelist):
 
 
 @attrs
-class CELL_NAMELIST(Namelist):
+class CellNamelist(Namelist):
     cell_dynamics: str = attrib(converter=str, default='none')
     press: float = attrib(converter=float, default=0.0)
     wmass: float = attrib(converter=float, default=0.001)
