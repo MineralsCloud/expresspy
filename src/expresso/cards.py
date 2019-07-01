@@ -50,6 +50,38 @@ class CellParameters(Card):
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
     lattice: Lattice = attrib(default=Lattice(np.diag([1, 1, 1])))
 
+    @classmethod
+    def from_parameters(cls, a, b, c, alpha, beta, gamma):
+        return Lattice.from_parameters(a, b, c, alpha, beta, gamma)
+
+    @property
+    def lattice_parameters(self):
+        return Lattice.from_parameters(*self.lattice.lattice_parameters).lattice_parameters
+
+    @property
+    def lattice_system(self):
+        return Lattice.from_parameters(*self.lattice_parameters).lattice_system
+
+    @property
+    def lattice_vectors(self):
+        return Lattice.from_parameters(*self.lattice_parameters).lattice_vectors
+
+    @property
+    def periodicity(self):
+        return Lattice.from_parameters(*self.lattice_parameters).periodicity
+
+    @property
+    def reciprocal_lattice(self):
+        return Lattice.from_parameters(*self.lattice_parameters).reciprocal
+
+    @property
+    def reciprocal_vectors(self):
+        return Lattice.from_parameters(*self.lattice_parameters).reciprocal_vectors
+
+    @property
+    def volume(self):
+        return Lattice.from_parameters(*self.lattice_parameters).volume
+
 
 @attrs
 class KPoints(Card):
