@@ -6,7 +6,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -118,6 +119,7 @@ $RECYCLE.BIN/
 .idea/*.iml
 .idea/vcs.xml
 .idea/misc.xml
+.idea/other.xml
 # .idea/modules
 # *.iml
 # *.ipr
