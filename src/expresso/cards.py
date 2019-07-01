@@ -18,13 +18,20 @@ class AtomicSpecies(Card):
     pseudopotentials: List[str] = attrib(factory=list)
 
     @pseudopotentials.validator
-    def _check_length(self, attribute, value):
+    def _check_length_equal(self, attribute, value):
         if not len(value) == len(self.atoms):
             raise ValueError("Length mismatch!")
+
+    @property
+    def data(self):
+        return list(zip(self.atoms, self.pseudopotentials))
 
     def __iter__(self):
         yield self.atoms
         yield self.pseudopotentials
+
+    def __len__(self):
+        return self.data.__len__()
 
 
 class AtomicPosition(Card):
