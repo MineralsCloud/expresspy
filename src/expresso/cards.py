@@ -63,11 +63,11 @@ class CellParameters(Card):
     lattice: Lattice = attrib(default=Lattice(np.diag([1, 1, 1])))
 
     @classmethod
-    def from_parameters(cls, option: str, a, b, c, alpha, beta, gamma):
+    def from_parameters(cls, option: str, a: float, b: float, c: float, alpha: float, beta: float, gamma: float):
         return cls(option, Lattice.from_parameters(a, b, c, alpha, beta, gamma))
 
     @classmethod
-    def from_array(cls, option, array: np.ndarray):
+    def from_array(cls, option: str, array: np.ndarray):
         if not array.shape == (3, 3):
             raise ValueError(f"Expected array of shape (3, 3), given {array.shape}!")
         return cls(option, Lattice(array))
