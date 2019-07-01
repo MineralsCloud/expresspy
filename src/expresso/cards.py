@@ -11,12 +11,11 @@ from crystals import Element
 
 @attrs
 class Card(object):
-    option: Optional[str] = attrib(validator=attr.validators.optional(attr.validators.instance_of(str)))
+    option: Optional[str] = attrib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
 
 
 @attrs
 class AtomicSpecies(Card):
-    option = attrib(default=None)
     atoms: List[Element] = attrib(factory=list)
     pseudopotentials: List[str] = attrib(factory=list)
 
