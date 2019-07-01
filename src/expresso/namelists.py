@@ -21,6 +21,10 @@ class Namelist(object):
             /
             """.format(self.name, {f"{key} = {value}" for (key, value) in entries.items()}))
 
+    def write(self, filename: str):
+        with open(filename, "r+") as f:
+            f.write(self.to_fortran())
+
     def dump(self, filename: str):
         d = attr.asdict(self)
         with open(filename, "r+") as f:
