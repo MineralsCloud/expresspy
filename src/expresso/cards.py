@@ -38,9 +38,9 @@ class AtomicSpecies(Card):
 
 @attrs
 class AtomicPosition(Card):
-    option = attrib(default="alat", validator=attr.validators.optional(attr.validators.instance_of(str)))
+    option: str = attrib(default="alat", validator=attr.validators.instance_of(str))
 
 
 @attrs
 class CellParameters(Card):
-    option = attrib(default="alat", validator=attr.validators.optional(attr.validators.instance_of(str)))
+    option: str = attrib(default="alat", validator=attr.validators.instance_of(str))
