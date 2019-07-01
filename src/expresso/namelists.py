@@ -1,17 +1,44 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from textwrap import dedent
 from typing import List
 
+import attr
 from attr import attrib, attrs
+from expresso.typeconversion import to_fortran
 
 
+@attrs
 class Namelist(object):
-    ...
+    name: str = attrib()
+
+    def to_fortran(self) -> str:
+        entries = {key: to_fortran(value) for (key, value) in attr.asdict(self).items()}
+        return dedent("""\
+            "&{}"
+                {}
+            /
+            """.format(self.name, {f"{key} = {value}" for (key, value) in entries.items()}))
+
+    def dump(self, filename: str):
+        d = attr.asdict(self)
+        with open(filename, "r+") as f:
+            if filename.endswith(".json"):
+                import json
+                json.dump(d, f)
+            if filename.endswith(".yaml|.yml"):
+                import yaml
+                try:
+                    from yaml import CDumper as Dumper
+                except ImportError:
+                    from yaml import Dumper
+                yaml.dump(d, f, Dumper=Dumper)
 
 
 @attrs
 class ControlNamelist(Namelist):
+    name: str = attrib("CONTROL")
     calculation: str = attrib(converter=str, default='scf')
     title: str = attrib(converter=str, default=' ')
     verbosity: str = attrib(converter=str, default='low')
@@ -45,6 +72,7 @@ class ControlNamelist(Namelist):
 
 @attrs
 class SystemNamelist(Namelist):
+    name: str = attrib("SYSTEM")
     ibrav: int = attrib(converter=int, default=0)
     celldm: List[float] = attrib(converter=lambda x: list(map(float, x)), factory=list)
     A: float = attrib(converter=float, default=0.0)
@@ -145,6 +173,7 @@ class SystemNamelist(Namelist):
 
 @attrs
 class ElectronsNamelist(Namelist):
+    name: str = attrib("ELECTRONS")
     electron_maxstep: int = attrib(converter=int, default=100)
     scf_must_converge: bool = attrib(converter=bool, default=True)
     conv_thr: float = attrib(converter=float, default=1e-06)
@@ -171,6 +200,7 @@ class ElectronsNamelist(Namelist):
 
 @attrs
 class IonsNamelist(Namelist):
+    name: str = attrib("IONS")
     ion_dynamics: str = attrib(converter=str, default='bfgs')
     ion_positions: str = attrib(converter=str, default='default')
     pot_extrapolation: str = attrib(converter=str, default='atomic')
@@ -193,6 +223,7 @@ class IonsNamelist(Namelist):
 
 @attrs
 class CellNamelist(Namelist):
+    name: str = attrib("CELL")
     cell_dynamics: str = attrib(converter=str, default='none')
     press: float = attrib(converter=float, default=0.0)
     wmass: float = attrib(converter=float, default=0.001)
