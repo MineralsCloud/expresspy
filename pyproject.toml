@@ -9,6 +9,7 @@ license = "MIT"
 python = "^3.6"
 attrs = "^19.1"
 crystals = "^0.6.4"
+pyyaml = "^5.1"
 
 [tool.poetry.dev-dependencies]
 attrs = "^19.1"
