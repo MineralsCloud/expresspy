@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 
 
+from collections import namedtuple
 from typing import List, Optional
 
 import attr
 import numpy as np
 from attr import attrs, attrib
 from crystals import Element, Atom, Lattice
+
+LatticeParameters = namedtuple('LatticeParameters', ['a', 'b', 'c', 'alpha', 'beta', 'gamma'])
 
 
 @attrs
@@ -56,7 +59,7 @@ class CellParameters(Card):
 
     @property
     def lattice_parameters(self):
-        return Lattice.from_parameters(*self.lattice.lattice_parameters).lattice_parameters
+        return LatticeParameters(*self.lattice.lattice_parameters)
 
     @property
     def lattice_system(self):
