@@ -25,7 +25,7 @@ class Namelist(object):
     def to_fortran(self) -> str:
         entries = {key: to_fortran(value) for (key, value) in attr.asdict(self).items()}
         return dedent("""\
-            "&{}"
+            &{}
                 {}
             /
             """.format(self.name, {f"{key} = {value}" for (key, value) in entries.items()}))
