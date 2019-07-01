@@ -2,12 +2,24 @@
 # -*- coding: utf-8 -*-
 
 
+from collections import namedtuple
 from typing import List, Optional
 
 import attr
 import numpy as np
 from attr import attrs, attrib
 from crystals import Element, Atom, Lattice
+
+__all__ = [
+    'LatticeParameters',
+    'Card',
+    'AtomicSpecies',
+    'AtomicPosition',
+    'CellParameters',
+    'KPoints'
+]
+
+LatticeParameters = namedtuple('LatticeParameters', ['a', 'b', 'c', 'alpha', 'beta', 'gamma'])
 
 
 @attrs
@@ -49,6 +61,44 @@ class CellParameters(Card):
     _allowed_options = ("alat", "bohr", "angstrom")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
     lattice: Lattice = attrib(default=Lattice(np.diag([1, 1, 1])))
+
+    @classmethod
+    def from_parameters(cls, option: str, a: float, b: float, c: float, alpha: float, beta: float, gamma: float):
+        return cls(option, Lattice.from_parameters(a, b, c, alpha, beta, gamma))
+
+    @classmethod
+    def from_array(cls, option: str, array: np.ndarray):
+        if not array.shape == (3, 3):
+            raise ValueError(f"Expected array of shape (3, 3), given {array.shape}!")
+        return cls(option, Lattice(array))
+
+    @property
+    def lattice_parameters(self):
+        return LatticeParameters(*self.lattice.lattice_parameters)
+
+    @property
+    def lattice_system(self):
+        return Lattice.from_parameters(*self.lattice_parameters).lattice_system
+
+    @property
+    def lattice_vectors(self):
+        return Lattice.from_parameters(*self.lattice_parameters).lattice_vectors
+
+    @property
+    def periodicity(self):
+        return Lattice.from_parameters(*self.lattice_parameters).periodicity
+
+    @property
+    def reciprocal_lattice(self):
+        return Lattice.from_parameters(*self.lattice_parameters).reciprocal
+
+    @property
+    def reciprocal_vectors(self):
+        return Lattice.from_parameters(*self.lattice_parameters).reciprocal_vectors
+
+    @property
+    def volume(self):
+        return Lattice.from_parameters(*self.lattice_parameters).volume
 
 
 @attrs
