@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import singledispatch
+from typing import List
 
 __all__ = [
     'to_fortran'
@@ -41,3 +42,8 @@ def _(v: str) -> str:
     if not isinstance(v, str):
         raise TypeError("Expected input to be a string!")
     return v
+
+
+@to_fortran.register
+def _(v: list) -> List[str]:
+    return list(map(to_fortran, v))
