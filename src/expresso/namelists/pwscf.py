@@ -21,7 +21,7 @@ __all__ = [
 
 @attrs
 class Namelist(object):
-    name: str = attrib()
+    name: str = attrib(validator=attr.validators.instance_of(str))
 
     def to_fortran(self) -> str:
         entries = {key: to_fortran(value) for (key, value) in attr.asdict(self).items()}
