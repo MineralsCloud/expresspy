@@ -6,7 +6,8 @@ from typing import List
 
 import attr
 from attr import attrib, attrs
-from expresso.typeconversion import to_fortran
+
+from ..typeconversion import to_fortran
 
 __all__ = [
     'Namelist',
