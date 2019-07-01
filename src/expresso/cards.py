@@ -38,14 +38,18 @@ class AtomicSpecies(Card):
 
 @attrs
 class AtomicPosition(Card):
-    option: str = attrib(default="alat", validator=attr.validators.instance_of(str))
+    _allowed_options = ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
+    option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
 
 
 @attrs
 class CellParameters(Card):
-    option: str = attrib(default="alat", validator=attr.validators.instance_of(str))
+    _allowed_options = ("alat", "bohr", "angstrom")
+    option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
 
 
 @attrs
 class KPoints(Card):
-    option: str = attrib(default="tbipa", validator=attr.validators.instance_of(str))
+    _allowed_options = ("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
+    option: str = attrib(default="tpiba", validator=attr.validators.in_(_allowed_options))
+    points: List = attrib(factory=list)
