@@ -1,28 +1,34 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from functools import singledispatch
 
 __all__ = [
-    'fortranfloat',
-    'fortrancomplex',
-    'fortranbool',
-    'fortranstr'
+    'to_fortran'
 ]
 
 
-def fortranfloat(v: float) -> str:
+@singledispatch
+def to_fortran(v):
+    raise TypeError("Unsupported type!")
+
+
+@to_fortran.register
+def _(v: float) -> str:
     if not isinstance(v, float):
         raise TypeError("Expected input to be a float!")
     return "{:.16E}".format(v)
 
 
-def fortrancomplex(v: complex) -> str:
+@to_fortran.register
+def _(v: complex) -> str:
     if not isinstance(v, complex):
         raise TypeError("Expected input to be a complex!")
-    return "CMPLX({}, {})".format(fortranfloat(v.real), fortranfloat(v.imag))
+    return "CMPLX({}, {})".format(to_fortran(v.real), to_fortran(v.imag))
 
 
-def fortranbool(v: bool) -> str:
+@to_fortran.register
+def _(v: bool) -> str:
     if not isinstance(v, bool):
         raise TypeError("Expected input to be a boolean!")
     if v is True:
@@ -30,7 +36,8 @@ def fortranbool(v: bool) -> str:
     return ".false."
 
 
-def fortranstr(v: str) -> str:
+@to_fortran.register
+def _(v: str) -> str:
     if not isinstance(v, str):
         raise TypeError("Expected input to be a string!")
     return v
