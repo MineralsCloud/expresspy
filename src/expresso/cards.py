@@ -44,3 +44,8 @@ class AtomicPosition(Card):
 @attrs
 class CellParameters(Card):
     option: str = attrib(default="alat", validator=attr.validators.instance_of(str))
+
+
+@attrs
+class KPoints(Card):
+    option: str = attrib(default="tbipa", validator=attr.validators.instance_of(str))
