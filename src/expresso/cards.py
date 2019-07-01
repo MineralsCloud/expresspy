@@ -5,8 +5,9 @@
 from typing import List, Optional
 
 import attr
+import numpy as np
 from attr import attrs, attrib
-from crystals import Element
+from crystals import Element, Atom, Lattice
 
 
 @attrs
@@ -40,12 +41,14 @@ class AtomicSpecies(Card):
 class AtomicPosition(Card):
     _allowed_options = ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
+    atoms: List[Atom] = attrib(factory=list)
 
 
 @attrs
 class CellParameters(Card):
     _allowed_options = ("alat", "bohr", "angstrom")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
+    lattice: Lattice = attrib(default=Lattice(np.diag([1, 1, 1])))
 
 
 @attrs
