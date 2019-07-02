@@ -24,11 +24,9 @@ class Namelist(object):
     def to_qe(self) -> str:
         entries = {key: to_fortran(value) for (key, value) in attr.asdict(self).items()}
         import textwrap
-        return textwrap.dedent("""\
-            &{}
-                {}
-            /
-            """.format(self.name, {f"{key} = {value}" for (key, value) in entries.items()}))
+        return textwrap.dedent(
+            f"&{self.name}\n" + "\n".join(f"    {key} = {value}" for (key, value) in entries.items()) + "\n/\n"
+        )
 
     def write(self, filename: str):
         with open(filename, "r+") as f:
