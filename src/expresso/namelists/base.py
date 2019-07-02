@@ -22,7 +22,8 @@ class Namelist(object):
         return list(attr.fields_dict(self.__class__).keys())[1:]
 
     def to_qe(self) -> str:
-        entries = {key: to_fortran(value) for (key, value) in attr.asdict(self).items()}
+        entries = {key: to_fortran(value) for (key, value) in
+                   attr.asdict(self, filter=attr.filters.exclude(attr.fields(self.__class__).name)).items()}
         import textwrap
         return textwrap.dedent(
             f"&{self.name}\n" + "\n".join(f"    {key} = {value}" for (key, value) in entries.items()) + "\n/\n"
