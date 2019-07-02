@@ -12,7 +12,7 @@ __all__ = [
 ]
 
 
-@attrs
+@attrs(frozen=True)
 class Namelist(object):
     _name: str
 
