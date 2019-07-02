@@ -6,7 +6,7 @@ from typing import Dict
 from attr import attrib, attrs
 
 from src.expresso.cards import *
-from src.expresso.namelists.pwscf import *
+from src.expresso.namelists import *
 
 __all__ = [
     'PWscfInput'
