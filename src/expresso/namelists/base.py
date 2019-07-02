@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import List, Dict, Any
 
 import attr
 from attr import attrib, attrs
@@ -19,6 +19,10 @@ def not_private(attribute, value):
 @attrs
 class Namelist(object):
     _name: str = attrib(validator=attr.validators.instance_of(str))
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]):
+        return cls(**d)
 
     def asdict(self):
         return attr.asdict(self, filter=not_private)
