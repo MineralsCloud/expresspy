@@ -11,10 +11,12 @@ from attr import attrs, attrib
 from src.expresso.cards.base import Card
 
 __all__ = [
+    'SpecialKPoint',
     'MonkhorstPackGrid',
     'KPoints'
 ]
 
+SpecialKPoint = namedtuple("SpecialKPoint", ["x", "y", "z", "weight"])
 MonkhorstPackGrid = namedtuple('MonkhorstPackGrid', ['grid', 'offsets'])
 
 
