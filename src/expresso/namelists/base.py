@@ -31,7 +31,9 @@ class Namelist(object):
         entries = {key: to_fortran(value) for (key, value) in self.asdict().items()}
         import textwrap
         return textwrap.dedent(
-            f"&{self._name}\n" + "\n".join(f"    {key} = {value}" for (key, value) in entries.items()) + "\n/\n"
+            f"&{self._name}\n" +
+            "\n".join(f"    {key} = {value}" for (key, value) in entries.items()) +
+            "\n/\n"
         )
 
     def write(self, filename: str):
