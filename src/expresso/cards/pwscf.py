@@ -23,6 +23,30 @@ class MonkhorstPackGrid(object):
     grid = attrib()
     offsets = attrib()
 
+    @property
+    def nk1(self):
+        return self.grid[0]
+
+    @property
+    def nk2(self):
+        return self.grid[1]
+
+    @property
+    def nk3(self):
+        return self.grid[2]
+
+    @property
+    def sk1(self):
+        return self.offsets[0]
+
+    @property
+    def sk2(self):
+        return self.offsets[1]
+
+    @property
+    def sk3(self):
+        return self.offsets[2]
+
 
 @singleton
 class GammaPoint(object):
@@ -33,6 +57,22 @@ class GammaPoint(object):
 class SpecialKPoint(object):
     coordinates = attrib()
     weight = attrib()
+
+    @property
+    def x(self):
+        return self.coordinates[0]
+
+    @property
+    def y(self):
+        return self.coordinates[1]
+
+    @property
+    def z(self):
+        return self.coordinates[2]
+
+    @property
+    def w(self):
+        return self.weight
 
 
 @attrs
