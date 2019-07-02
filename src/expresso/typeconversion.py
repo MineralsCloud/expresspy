@@ -38,7 +38,7 @@ def _(v: bool) -> str:
 
 @to_fortran.register(str)
 def _(v: str) -> str:
-    return v
+    return "'{}'".format(v)
 
 
 @to_fortran.register(list)
