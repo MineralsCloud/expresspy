@@ -37,6 +37,27 @@ class Card(object):
     def to_dict(self):
         return attr.asdict(self, filter=not_private)
 
+    def to_qe(self) -> str:
+        ...
+
+    def write(self, filename: str):
+        with open(filename, "r+") as f:
+            f.write(self.to_qe())
+
+    def dump(self, filename: str):
+        d = self.to_dict()
+        with open(filename, "r+") as f:
+            if filename.endswith(".json"):
+                import json
+                json.dump(d, f)
+            if filename.endswith(".yaml|.yml"):
+                import yaml
+                try:
+                    from yaml import CDumper as Dumper
+                except ImportError:
+                    from yaml import Dumper
+                yaml.dump(d, f, Dumper=Dumper)
+
 
 @attrs
 class AtomicSpecies(Card):
