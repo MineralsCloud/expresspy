@@ -28,6 +28,9 @@ class Card(object):
     _name: str
     option: Optional[str] = attrib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
 
+    def evolve(self, **changes):
+        return attr.evolve(self, **changes)
+
     def to_dict(self):
         return attr.asdict(self)
 
