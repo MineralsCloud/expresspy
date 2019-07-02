@@ -7,7 +7,7 @@ from collections import namedtuple
 from typing import List, Optional
 
 import attr
-from attr import attrs, attrib
+from attr import attrib, attrs
 from src.expresso.cards.base import Card
 
 __all__ = [
