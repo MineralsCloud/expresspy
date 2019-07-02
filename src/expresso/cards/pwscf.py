@@ -17,13 +17,22 @@ __all__ = [
     'KPoints'
 ]
 
-SpecialKPoint = namedtuple("SpecialKPoint", ["x", "y", "z", "weight"])
-MonkhorstPackGrid = namedtuple('MonkhorstPackGrid', ['grid', 'offsets'])
+
+@attrs
+class MonkhorstPackGrid(object):
+    grid = attrib()
+    offsets = attrib()
 
 
 @singleton
 class GammaPoint(object):
     ...
+
+
+@attrs
+class SpecialKPoint(object):
+    coordinates = attrib()
+    weight = attrib()
 
 
 @attrs
@@ -44,18 +53,6 @@ class KPoints(Card):
         else:  # `self.option` in `("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")`
             if not all(map(lambda x: isinstance(x, SpecialKPoint), value)):
                 raise TypeError
-
-    @property
-    def grid(self):
-        if not self.option == "automatic":
-            raise ValueError
-        return self.points[0:3]
-
-    @property
-    def offsets(self):
-        if not self.option == "automatic":
-            raise ValueError
-        return self.points[3:6]
 
     def __len__(self) -> Optional[int]:
         if self.option == "automatic":
