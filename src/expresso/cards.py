@@ -62,7 +62,7 @@ class AtomicSpecies(Card):
 
     def to_qe(self):
         return textwrap.dedent(f"""\
-        {self.name}
+        {self._name}
         """ + f"{x}" for x in self.data)
 
 
@@ -75,7 +75,7 @@ class AtomicPosition(Card):
 
     def to_qe(self):
         return textwrap.dedent(f"""\
-        {self.name} {self.option}
+        {self._name} {self.option}
         """ + f"{x}" for x in self.atoms)
 
 
@@ -169,6 +169,6 @@ class KPoints(Card):
             return "{} {}".format(self.mesh, self.shift)
         else:
             return textwrap.dedent(f"""\
-            {self.name} {self.option}
+            {self._name} {self.option}
             {len(self)}
             """ + f"{point}\n" for point in self.points)
