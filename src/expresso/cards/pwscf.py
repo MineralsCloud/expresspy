@@ -103,6 +103,14 @@ class KPoints(Card):
             if not all(map(lambda x: isinstance(x, SpecialKPoint), value)):
                 raise TypeError
 
+    @classmethod
+    def from_monkhorst_pack_grid(cls, mp: MonkhorstPackGrid):
+        return cls("automatic", mp)
+
+    @classmethod
+    def from_gamma_point(cls, g: GammaPoint):
+        return cls("gamma", g)
+
     def __len__(self) -> Optional[int]:
         if self.option == "automatic":
             return None
