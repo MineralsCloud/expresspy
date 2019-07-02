@@ -24,15 +24,15 @@ class Namelist(object):
     def from_dict(cls, d: Dict[str, Any]):
         return cls(**d)
 
-    def asdict(self):
+    def to_dict(self):
         return attr.asdict(self, filter=not_private)
 
     @property
     def names(self) -> List[str]:
-        return list(self.asdict().keys())
+        return list(self.to_dict().keys())
 
     def to_qe(self) -> str:
-        entries = {key: to_fortran(value) for (key, value) in self.asdict().items()}
+        entries = {key: to_fortran(value) for (key, value) in self.to_dict().items()}
         import textwrap
         return textwrap.dedent(
             f"&{self._name}\n" +
