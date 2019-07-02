@@ -31,17 +31,19 @@ class KPoints(Card):
     _name: str = "K_POINTS"
     _allowed_options = ("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
     option: str = attrib(default="tpiba", validator=attr.validators.in_(_allowed_options))
-    points: List = attrib(factory=list)
+    points = attrib()
 
     @points.validator
     def _check_points(self, attribute, value):
         if self.option == "automatic":
-            if not len(value) == 6:
-                raise ValueError
-
-    @classmethod
-    def from_monkhorst_pack_grid(cls, tuple: MonkhorstPackGrid):
-        return cls("automatic", tuple)
+            if not isinstance(value, MonkhorstPackGrid):
+                raise TypeError
+        if self.option == "gamma":
+            if not isinstance(value, GammaPoint):
+                raise TypeError
+        else:  # `self.option` in `("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")`
+            if not all(map(lambda x: isinstance(x, SpecialKPoint), value)):
+                raise TypeError
 
     @property
     def grid(self):
