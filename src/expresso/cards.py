@@ -26,13 +26,13 @@ LatticeParameters = namedtuple('LatticeParameters', ['a', 'b', 'c', 'alpha', 'be
 
 @attrs
 class Card(object):
-    name: str = attrib(attr.validators.instance_of(str))
+    _name: str = attrib(attr.validators.instance_of(str))
     option: Optional[str] = attrib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
 
 
 @attrs
 class AtomicSpecies(Card):
-    name: str = attrib(default="ATOMIC_SPECIES")
+    _name: str = attrib(default="ATOMIC_SPECIES")
     atoms: List[Element] = attrib(factory=list)
     pseudopotentials: List[str] = attrib(factory=list)
 
@@ -60,7 +60,7 @@ class AtomicSpecies(Card):
 
 @attrs
 class AtomicPosition(Card):
-    name: str = attrib(default="ATOMIC_POSITIONS")
+    _name: str = attrib(default="ATOMIC_POSITIONS")
     _allowed_options = ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
     atoms: List[Atom] = attrib(factory=list)
@@ -73,7 +73,7 @@ class AtomicPosition(Card):
 
 @attrs
 class CellParameters(Card):
-    name: str = attrib(default="CELL_PARAMETERS")
+    _name: str = attrib(default="CELL_PARAMETERS")
     _allowed_options = ("alat", "bohr", "angstrom")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
     lattice: Lattice = attrib(default=Lattice(np.diag([1, 1, 1])))
@@ -123,7 +123,7 @@ class CellParameters(Card):
 
 @attrs
 class KPoints(Card):
-    name: str = attrib(default="K_POINTS")
+    _name: str = attrib(default="K_POINTS")
     _allowed_options = ("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
     option: str = attrib(default="tpiba", validator=attr.validators.in_(_allowed_options))
     points: List = attrib(factory=list)
