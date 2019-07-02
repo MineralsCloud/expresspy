@@ -30,7 +30,7 @@ LatticeParameters = namedtuple('LatticeParameters', ['a', 'b', 'c', 'alpha', 'be
 
 @attrs
 class Card(object):
-    _name: str = attrib(attr.validators.instance_of(str))
+    _name: str
     option: Optional[str] = attrib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
 
     def to_dict(self):
@@ -60,7 +60,7 @@ class Card(object):
 
 @attrs
 class AtomicSpecies(Card):
-    _name: str = attrib(default="ATOMIC_SPECIES")
+    _name: str = "ATOMIC_SPECIES"
     atoms: List[Element] = attrib(factory=list)
     pseudopotentials: List[str] = attrib(factory=list)
 
@@ -88,7 +88,7 @@ class AtomicSpecies(Card):
 
 @attrs
 class AtomicPosition(Card):
-    _name: str = attrib(default="ATOMIC_POSITIONS")
+    _name: str = "ATOMIC_POSITIONS"
     _allowed_options = ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
     atoms: List[Atom] = attrib(factory=list)
@@ -101,7 +101,7 @@ class AtomicPosition(Card):
 
 @attrs
 class CellParameters(Card):
-    _name: str = attrib(default="CELL_PARAMETERS")
+    _name: str = "CELL_PARAMETERS"
     _allowed_options = ("alat", "bohr", "angstrom")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
     lattice: Lattice = attrib(default=Lattice(np.diag([1, 1, 1])))

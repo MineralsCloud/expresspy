@@ -16,7 +16,7 @@ __all__ = [
 
 @attrs
 class KPoints(Card):
-    _name: str = attrib(default="K_POINTS")
+    _name: str = "K_POINTS"
     _allowed_options = ("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
     option: str = attrib(default="tpiba", validator=attr.validators.in_(_allowed_options))
     points: List = attrib(factory=list)
