@@ -3,6 +3,7 @@
 
 
 import textwrap
+from collections import namedtuple
 from typing import List, Optional
 
 import attr
@@ -10,8 +11,11 @@ from attr import attrs, attrib
 from src.expresso.cards.base import Card
 
 __all__ = [
+    'MonkhorstPackGrid',
     'KPoints'
 ]
+
+MonkhorstPackGrid = namedtuple('MonkhorstPackGrid', ['grid', 'offsets'])
 
 
 @attrs
@@ -26,6 +30,10 @@ class KPoints(Card):
         if self.option == "automatic":
             if not len(value) == 6:
                 raise ValueError
+
+    @classmethod
+    def from_monkhorst_pack_grid(cls, tuple: MonkhorstPackGrid):
+        return cls("automatic", tuple)
 
     @property
     def mesh(self):
