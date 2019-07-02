@@ -7,7 +7,7 @@ from typing import List
 import attr
 from attr import attrib, attrs
 
-from ..typeconversion import to_fortran
+from src.expresso.typeconversion import to_fortran
 
 __all__ = [
     'Namelist',
@@ -21,7 +21,11 @@ __all__ = [
 
 @attrs
 class Namelist(object):
-    name: str = attrib()
+    name: str = attrib(validator=attr.validators.instance_of(str))
+
+    @property
+    def names(self) -> List[str]:
+        return list(attr.fields_dict(self.__class__).keys())[1:]
 
     def to_fortran(self) -> str:
         entries = {key: to_fortran(value) for (key, value) in attr.asdict(self).items()}
