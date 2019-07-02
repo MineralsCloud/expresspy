@@ -25,6 +25,7 @@ class Namelist(object):
 
     @property
     def names(self) -> List[str]:
+        # Starting from index `1`: not including `name` attribute
         return list(attr.fields_dict(self.__class__).keys())[1:]
 
     def to_fortran(self) -> str:
