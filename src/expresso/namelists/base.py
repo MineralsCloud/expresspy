@@ -20,6 +20,9 @@ class Namelist(object):
     def from_dict(cls, d: Dict[str, Any]):
         return cls(**d)
 
+    def evolve(self, **changes):
+        return attr.evolve(self, **changes)
+
     def to_dict(self):
         return attr.asdict(self)
 
