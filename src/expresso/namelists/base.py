@@ -16,14 +16,15 @@ __all__ = [
 class Namelist(object):
     name: str = attrib(validator=attr.validators.instance_of(str))
 
+    def asdict(self):
+        return attr.asdict(self, filter=attr.filters.exclude(attr.fields(self.__class__).name))
+
     @property
     def names(self) -> List[str]:
-        # Starting from index `1`: not including `name` attribute
-        return list(attr.fields_dict(self.__class__).keys())[1:]
+        return list(self.asdict().keys())
 
     def to_qe(self) -> str:
-        entries = {key: to_fortran(value) for (key, value) in
-                   attr.asdict(self, filter=attr.filters.exclude(attr.fields(self.__class__).name)).items()}
+        entries = {key: to_fortran(value) for (key, value) in self.asdict().items()}
         import textwrap
         return textwrap.dedent(
             f"&{self.name}\n" + "\n".join(f"    {key} = {value}" for (key, value) in entries.items()) + "\n/\n"
