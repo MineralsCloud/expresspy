@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from textwrap import dedent
 from typing import List
 
 import attr
@@ -24,7 +23,8 @@ class Namelist(object):
 
     def to_qe(self) -> str:
         entries = {key: to_fortran(value) for (key, value) in attr.asdict(self).items()}
-        return dedent("""\
+        import textwrap
+        return textwrap.dedent("""\
             &{}
                 {}
             /
