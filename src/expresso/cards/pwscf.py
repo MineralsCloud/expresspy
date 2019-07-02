@@ -20,8 +20,14 @@ __all__ = [
 
 @attrs
 class MonkhorstPackGrid(object):
-    grid = attrib()
-    offsets = attrib()
+    grid = attrib(validator=attr.validators.deep_iterable(
+        member_validator=attr.validators.instance_of(int),
+        iterable_validator=attr.validators.instance_of(list)
+    ))
+    offsets = attrib(validator=attr.validators.deep_iterable(
+        member_validator=attr.validators.instance_of(int),
+        iterable_validator=attr.validators.instance_of(list)
+    ))
 
     @property
     def nk1(self):
@@ -55,8 +61,11 @@ class GammaPoint(object):
 
 @attrs
 class SpecialKPoint(object):
-    coordinates = attrib()
-    weight = attrib()
+    coordinates = attrib(validator=attr.validators.deep_iterable(
+        member_validator=attr.validators.instance_of(float),
+        iterable_validator=attr.validators.instance_of(list)
+    ))
+    weight = attrib(validator=attr.validators.instance_of(float))
 
     @property
     def x(self):
