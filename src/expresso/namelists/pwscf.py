@@ -36,7 +36,7 @@ class ControlNamelist(Namelist):
     etot_conv_thr: float = attrib(converter=float, default=0.0001)
     forc_conv_thr: float = attrib(converter=float, default=0.001)
     disk_io: str = attrib(converter=str, default='medium')
-    pseudo_dir: str = attrib(converter=str, default='$ESPRESSO_PSEUDO')
+    pseudo_dir: str = attrib(converter=str, default='$HOME/espresso/pseudo/')
     tefield: bool = attrib(converter=bool, default=False)
     dipfield: bool = attrib(converter=bool, default=False)
     lelfield: bool = attrib(converter=bool, default=False)
