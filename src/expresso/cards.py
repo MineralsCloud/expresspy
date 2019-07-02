@@ -52,6 +52,11 @@ class AtomicSpecies(Card):
     def __len__(self):
         return self.data.__len__()
 
+    def to_fortran(self):
+        return textwrap.dedent(f"""\
+        {self.name}
+        """ + f"{x}" for x in self.data)
+
 
 @attrs
 class AtomicPosition(Card):
@@ -59,6 +64,11 @@ class AtomicPosition(Card):
     _allowed_options = ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
     atoms: List[Atom] = attrib(factory=list)
+
+    def to_fortran(self):
+        return textwrap.dedent(f"""\
+        {self.name} {self.option}
+        """ + f"{x}" for x in self.atoms)
 
 
 @attrs
