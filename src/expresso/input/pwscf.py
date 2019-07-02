@@ -22,7 +22,8 @@ class PWscfInput(object):
     def _check_must_contain(self, attribute, value):
         if {"CONTROL", "SYSTEM", "ELECTRONS"}.difference(set(value.keys())) != {}:
             raise ValueError
-        if not all([isinstance(value["CONTROL"], ControlNamelist), isinstance(value["SYSTEM"], SystemNamelist),
+        if not all([isinstance(value["CONTROL"], ControlNamelist),
+                    isinstance(value["SYSTEM"], SystemNamelist),
                     isinstance(value["ELECTRONS"], ElectronsNamelist)]):
             raise ValueError
 
