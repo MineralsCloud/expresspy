@@ -20,11 +20,6 @@ __all__ = [
     'CellParameters'
 ]
 
-
-def not_private(attribute, value):
-    return not attribute.name.startswith("_")
-
-
 LatticeParameters = namedtuple('LatticeParameters', ['a', 'b', 'c', 'alpha', 'beta', 'gamma'])
 
 
@@ -34,7 +29,7 @@ class Card(object):
     option: Optional[str] = attrib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
 
     def to_dict(self):
-        return attr.asdict(self, filter=not_private)
+        return attr.asdict(self)
 
     def to_qe(self) -> str:
         ...
