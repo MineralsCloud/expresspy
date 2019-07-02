@@ -17,3 +17,11 @@ __all__ = [
 class PWscfInput(object):
     namelists: Dict[str, Namelist] = attrib(factory=dict)
     cards: Dict[str, Card] = attrib(factory=dict)
+
+    @namelists.validator
+    def _check_contains(self, attribute, value):
+        if {"CONTROL", "SYSTEM", "ELECTRONS"}.difference(set(value.keys())) is not {}:
+            raise ValueError
+        if not all([isinstance(value["CONTROL"], ControlNamelist), isinstance(value["SYSTEM"], SystemNamelist),
+                    isinstance(value["ELECTRONS"], ElectronsNamelist)]):
+            raise ValueError
