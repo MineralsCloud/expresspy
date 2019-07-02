@@ -36,13 +36,13 @@ class KPoints(Card):
         return cls("automatic", tuple)
 
     @property
-    def mesh(self):
+    def grid(self):
         if not self.option == "automatic":
             raise ValueError
         return self.points[0:3]
 
     @property
-    def shift(self):
+    def offsets(self):
         if not self.option == "automatic":
             raise ValueError
         return self.points[3:6]
@@ -59,7 +59,7 @@ class KPoints(Card):
         if self.option == "gamma":
             return ""
         if self.option == "automatic":
-            return "{} {}".format(self.mesh, self.shift)
+            return "{} {}".format(self.grid, self.offsets)
         else:
             return textwrap.dedent(f"""\
             {self._name} {self.option}
