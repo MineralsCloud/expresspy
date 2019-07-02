@@ -18,7 +18,7 @@ def not_private(attribute, value):
 
 @attrs
 class Namelist(object):
-    _name: str = attrib(validator=attr.validators.instance_of(str))
+    _name: str
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]):
