@@ -23,7 +23,7 @@ __all__ = [
 LatticeParameters = namedtuple('LatticeParameters', ['a', 'b', 'c', 'alpha', 'beta', 'gamma'])
 
 
-@attrs
+@attrs(frozen=True)
 class Card(object):
     _name: str
     option: Optional[str] = attrib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
