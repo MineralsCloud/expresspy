@@ -19,7 +19,7 @@ class PWscfInput(object):
     cards: Dict[str, Card] = attrib(factory=dict)
 
     @namelists.validator
-    def _check_contains(self, attribute, value):
+    def _check_must_contain(self, attribute, value):
         if {"CONTROL", "SYSTEM", "ELECTRONS"}.difference(set(value.keys())) != {}:
             raise ValueError
         if not all([isinstance(value["CONTROL"], ControlNamelist), isinstance(value["SYSTEM"], SystemNamelist),
@@ -27,7 +27,7 @@ class PWscfInput(object):
             raise ValueError
 
     @cards.validator
-    def _check_contains(self, attribute, value):
+    def _check_must_contain(self, attribute, value):
         if {"ATOMIC_SPECIES", "ATOMIC_POSITIONS", "K_POINTS"}.difference(set(value.keys())) != {}:
             raise ValueError
         if not all([isinstance(value["ATOMIC_SPECIES"], AtomicSpecies),
