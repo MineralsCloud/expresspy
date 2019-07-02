@@ -7,7 +7,6 @@ from attr import attrib, attrs
 from src.expresso.namelists import Namelist
 
 __all__ = [
-    'Namelist',
     'ControlNamelist',
     'SystemNamelist',
     'ElectronsNamelist',
