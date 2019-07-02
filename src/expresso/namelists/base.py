@@ -45,7 +45,7 @@ class Namelist(object):
             f.write(self.to_qe())
 
     def dump(self, filename: str):
-        d = attr.asdict(self)
+        d = self.to_dict()
         with open(filename, "r+") as f:
             if filename.endswith(".json"):
                 import json
