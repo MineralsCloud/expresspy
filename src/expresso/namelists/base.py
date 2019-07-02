@@ -12,12 +12,16 @@ __all__ = [
 ]
 
 
+def not_private(attribute, value):
+    return not attribute.name.startswith("_")
+
+
 @attrs
 class Namelist(object):
-    name: str = attrib(validator=attr.validators.instance_of(str))
+    _name: str = attrib(validator=attr.validators.instance_of(str))
 
     def asdict(self):
-        return attr.asdict(self, filter=attr.filters.exclude(attr.fields(self.__class__).name))
+        return attr.asdict(self, filter=not_private)
 
     @property
     def names(self) -> List[str]:
@@ -27,7 +31,7 @@ class Namelist(object):
         entries = {key: to_fortran(value) for (key, value) in self.asdict().items()}
         import textwrap
         return textwrap.dedent(
-            f"&{self.name}\n" + "\n".join(f"    {key} = {value}" for (key, value) in entries.items()) + "\n/\n"
+            f"&{self._name}\n" + "\n".join(f"    {key} = {value}" for (key, value) in entries.items()) + "\n/\n"
         )
 
     def write(self, filename: str):
