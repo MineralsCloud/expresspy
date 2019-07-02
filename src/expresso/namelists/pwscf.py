@@ -7,7 +7,6 @@ from attr import attrib, attrs
 from src.expresso.namelists import Namelist
 
 __all__ = [
-    'Namelist',
     'ControlNamelist',
     'SystemNamelist',
     'ElectronsNamelist',
@@ -18,7 +17,7 @@ __all__ = [
 
 @attrs
 class ControlNamelist(Namelist):
-    name: str = attrib("CONTROL")
+    _name: str = attrib("CONTROL")
     calculation: str = attrib(converter=str, default='scf')
     title: str = attrib(converter=str, default=' ')
     verbosity: str = attrib(converter=str, default='low')
@@ -52,7 +51,7 @@ class ControlNamelist(Namelist):
 
 @attrs
 class SystemNamelist(Namelist):
-    name: str = attrib("SYSTEM")
+    _name: str = attrib("SYSTEM")
     ibrav: int = attrib(converter=int, default=0)
     celldm: List[float] = attrib(converter=lambda x: list(map(float, x)), factory=list)
     A: float = attrib(converter=float, default=0.0)
@@ -153,7 +152,7 @@ class SystemNamelist(Namelist):
 
 @attrs
 class ElectronsNamelist(Namelist):
-    name: str = attrib("ELECTRONS")
+    _name: str = attrib("ELECTRONS")
     electron_maxstep: int = attrib(converter=int, default=100)
     scf_must_converge: bool = attrib(converter=bool, default=True)
     conv_thr: float = attrib(converter=float, default=1e-06)
@@ -180,7 +179,7 @@ class ElectronsNamelist(Namelist):
 
 @attrs
 class IonsNamelist(Namelist):
-    name: str = attrib("IONS")
+    _name: str = attrib("IONS")
     ion_dynamics: str = attrib(converter=str, default='bfgs')
     ion_positions: str = attrib(converter=str, default='default')
     pot_extrapolation: str = attrib(converter=str, default='atomic')
@@ -203,7 +202,7 @@ class IonsNamelist(Namelist):
 
 @attrs
 class CellNamelist(Namelist):
-    name: str = attrib("CELL")
+    _name: str = attrib("CELL")
     cell_dynamics: str = attrib(converter=str, default='none')
     press: float = attrib(converter=float, default=0.0)
     wmass: float = attrib(converter=float, default=0.001)
