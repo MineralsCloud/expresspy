@@ -4,9 +4,9 @@
 from typing import Dict
 
 from attr import attrib, attrs
-
-from src.expresso.cards import *
-from src.expresso.namelists import *
+from src.expresso.cards import AtomicPosition, AtomicSpecies, Card, KPoints
+from src.expresso.namelists import (ControlNamelist, ElectronsNamelist,
+                                    Namelist, SystemNamelist)
 
 __all__ = [
     'PWscfInput'
