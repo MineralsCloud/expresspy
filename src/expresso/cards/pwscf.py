@@ -8,6 +8,7 @@ from typing import List, Optional
 
 import attr
 from attr import attrib, attrs
+from singleton_decorator import singleton
 from src.expresso.cards.base import Card
 
 __all__ = [
@@ -18,6 +19,11 @@ __all__ = [
 
 SpecialKPoint = namedtuple("SpecialKPoint", ["x", "y", "z", "weight"])
 MonkhorstPackGrid = namedtuple('MonkhorstPackGrid', ['grid', 'offsets'])
+
+
+@singleton
+class GammaPoint(object):
+    ...
 
 
 @attrs
