@@ -52,7 +52,7 @@ class AtomicSpecies(Card):
     def __len__(self):
         return self.data.__len__()
 
-    def to_fortran(self):
+    def to_qe(self):
         return textwrap.dedent(f"""\
         {self.name}
         """ + f"{x}" for x in self.data)
@@ -65,7 +65,7 @@ class AtomicPosition(Card):
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
     atoms: List[Atom] = attrib(factory=list)
 
-    def to_fortran(self):
+    def to_qe(self):
         return textwrap.dedent(f"""\
         {self.name} {self.option}
         """ + f"{x}" for x in self.atoms)
@@ -116,7 +116,7 @@ class CellParameters(Card):
     def volume(self):
         return Lattice.from_parameters(*self.lattice_parameters).volume
 
-    def to_fortran(self):
+    def to_qe(self):
         return re.sub("[\[\]]", ' ',
                       np.array2string(self.lattice_vectors, formatter={'float_kind': lambda x: "{:20.10f}".format(x)}))
 
@@ -154,7 +154,7 @@ class KPoints(Card):
         if self.option == "gamma":
             return 1
 
-    def to_fortran(self):
+    def to_qe(self):
         if self.option == "gamma":
             return ""
         if self.option == "automatic":

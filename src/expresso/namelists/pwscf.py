@@ -28,7 +28,7 @@ class Namelist(object):
         # Starting from index `1`: not including `name` attribute
         return list(attr.fields_dict(self.__class__).keys())[1:]
 
-    def to_fortran(self) -> str:
+    def to_qe(self) -> str:
         entries = {key: to_fortran(value) for (key, value) in attr.asdict(self).items()}
         return dedent("""\
             &{}
@@ -38,7 +38,7 @@ class Namelist(object):
 
     def write(self, filename: str):
         with open(filename, "r+") as f:
-            f.write(self.to_fortran())
+            f.write(self.to_qe())
 
     def dump(self, filename: str):
         d = attr.asdict(self)
