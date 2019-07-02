@@ -13,7 +13,7 @@ __all__ = [
 
 @attrs
 class INPUTPHNamelist(Namelist):
-    _name: str = attrib("INPUTPH")
+    _name: str = "INPUTPH"
     amass: List[float] = attrib(converter=lambda x: list(map(float, x)), factory=list)
     outdir: str = attrib(converter=str, default="./")
     prefix: str = attrib(converter=str, default="pwscf")

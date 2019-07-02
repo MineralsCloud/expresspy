@@ -4,7 +4,7 @@
 from typing import List, Dict, Any
 
 import attr
-from attr import attrib, attrs
+from attr import attrs
 from src.expresso.typeconversion import to_fortran
 
 __all__ = [
@@ -12,20 +12,16 @@ __all__ = [
 ]
 
 
-def not_private(attribute, value):
-    return not attribute.name.startswith("_")
-
-
 @attrs
 class Namelist(object):
-    _name: str = attrib(validator=attr.validators.instance_of(str))
+    _name: str
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]):
         return cls(**d)
 
     def to_dict(self):
-        return attr.asdict(self, filter=not_private)
+        return attr.asdict(self)
 
     @property
     def names(self) -> List[str]:
