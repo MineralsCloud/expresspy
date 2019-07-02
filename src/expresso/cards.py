@@ -3,6 +3,7 @@
 
 
 import re
+import textwrap
 from collections import namedtuple
 from typing import List, Optional
 
@@ -142,3 +143,14 @@ class KPoints(Card):
             return self.points.__len__()
         if self.option == "gamma":
             return 1
+
+    def to_fortran(self):
+        if self.option == "gamma":
+            return ""
+        if self.option == "automatic":
+            return "{} {}".format(self.mesh, self.shift)
+        else:
+            return textwrap.dedent(f"""\
+            {self.name} {self.option}
+            {len(self)}
+            """ + f"{point}\n" for point in self.points)
