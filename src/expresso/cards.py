@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+import re
 from collections import namedtuple
 from typing import List, Optional
 
@@ -103,6 +104,10 @@ class CellParameters(Card):
     @property
     def volume(self):
         return Lattice.from_parameters(*self.lattice_parameters).volume
+
+    def to_fortran(self):
+        return re.sub("[\[\]]", ' ',
+                      np.array2string(self.lattice_vectors, formatter={'float_kind': lambda x: "{:20.10f}".format(x)}))
 
 
 @attrs
