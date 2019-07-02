@@ -8,6 +8,10 @@ from attr import attrib, attrs
 from src.expresso.cards import *
 from src.expresso.namelists.pwscf import *
 
+__all__ = [
+    'PWscfInput'
+]
+
 
 @attrs
 class PWscfInput(object):
