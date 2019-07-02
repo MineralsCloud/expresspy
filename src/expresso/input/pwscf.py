@@ -20,7 +20,7 @@ class PWscfInput(object):
 
     @namelists.validator
     def _check_contains(self, attribute, value):
-        if {"CONTROL", "SYSTEM", "ELECTRONS"}.difference(set(value.keys())) is not {}:
+        if {"CONTROL", "SYSTEM", "ELECTRONS"}.difference(set(value.keys())) != {}:
             raise ValueError
         if not all([isinstance(value["CONTROL"], ControlNamelist), isinstance(value["SYSTEM"], SystemNamelist),
                     isinstance(value["ELECTRONS"], ElectronsNamelist)]):
@@ -28,7 +28,7 @@ class PWscfInput(object):
 
     @cards.validator
     def _check_contains(self, attribute, value):
-        if {"ATOMIC_SPECIES", "ATOMIC_POSITIONS", "K_POINTS"}.difference(set(value.keys())) is not {}:
+        if {"ATOMIC_SPECIES", "ATOMIC_POSITIONS", "K_POINTS"}.difference(set(value.keys())) != {}:
             raise ValueError
         if not all([isinstance(value["ATOMIC_SPECIES"], AtomicSpecies),
                     isinstance(value["ATOMIC_POSITIONS"], AtomicPosition),
