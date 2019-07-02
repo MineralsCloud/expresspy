@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
+import re
+import textwrap
 from collections import namedtuple
 from typing import List, Optional
 
@@ -24,11 +26,13 @@ LatticeParameters = namedtuple('LatticeParameters', ['a', 'b', 'c', 'alpha', 'be
 
 @attrs
 class Card(object):
+    name: str = attrib(attr.validators.instance_of(str))
     option: Optional[str] = attrib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
 
 
 @attrs
 class AtomicSpecies(Card):
+    name: str = attrib(default="ATOMIC_SPECIES")
     atoms: List[Element] = attrib(factory=list)
     pseudopotentials: List[str] = attrib(factory=list)
 
@@ -48,16 +52,28 @@ class AtomicSpecies(Card):
     def __len__(self):
         return self.data.__len__()
 
+    def to_fortran(self):
+        return textwrap.dedent(f"""\
+        {self.name}
+        """ + f"{x}" for x in self.data)
+
 
 @attrs
 class AtomicPosition(Card):
+    name: str = attrib(default="ATOMIC_POSITIONS")
     _allowed_options = ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
     atoms: List[Atom] = attrib(factory=list)
 
+    def to_fortran(self):
+        return textwrap.dedent(f"""\
+        {self.name} {self.option}
+        """ + f"{x}" for x in self.atoms)
+
 
 @attrs
 class CellParameters(Card):
+    name: str = attrib(default="CELL_PARAMETERS")
     _allowed_options = ("alat", "bohr", "angstrom")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
     lattice: Lattice = attrib(default=Lattice(np.diag([1, 1, 1])))
@@ -100,9 +116,14 @@ class CellParameters(Card):
     def volume(self):
         return Lattice.from_parameters(*self.lattice_parameters).volume
 
+    def to_fortran(self):
+        return re.sub("[\[\]]", ' ',
+                      np.array2string(self.lattice_vectors, formatter={'float_kind': lambda x: "{:20.10f}".format(x)}))
+
 
 @attrs
 class KPoints(Card):
+    name: str = attrib(default="K_POINTS")
     _allowed_options = ("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
     option: str = attrib(default="tpiba", validator=attr.validators.in_(_allowed_options))
     points: List = attrib(factory=list)
@@ -132,3 +153,14 @@ class KPoints(Card):
             return self.points.__len__()
         if self.option == "gamma":
             return 1
+
+    def to_fortran(self):
+        if self.option == "gamma":
+            return ""
+        if self.option == "automatic":
+            return "{} {}".format(self.mesh, self.shift)
+        else:
+            return textwrap.dedent(f"""\
+            {self.name} {self.option}
+            {len(self)}
+            """ + f"{point}\n" for point in self.points)
