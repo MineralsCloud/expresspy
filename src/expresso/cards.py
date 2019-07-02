@@ -21,6 +21,11 @@ __all__ = [
     'KPoints'
 ]
 
+
+def not_private(attribute, value):
+    return not attribute.name.startswith("_")
+
+
 LatticeParameters = namedtuple('LatticeParameters', ['a', 'b', 'c', 'alpha', 'beta', 'gamma'])
 
 
@@ -28,6 +33,9 @@ LatticeParameters = namedtuple('LatticeParameters', ['a', 'b', 'c', 'alpha', 'be
 class Card(object):
     _name: str = attrib(attr.validators.instance_of(str))
     option: Optional[str] = attrib(default=None, validator=attr.validators.optional(attr.validators.instance_of(str)))
+
+    def to_dict(self):
+        return attr.asdict(self, filter=not_private)
 
 
 @attrs
