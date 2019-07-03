@@ -3,8 +3,7 @@
 
 
 import textwrap
-from collections import namedtuple
-from typing import List, Optional
+from typing import Optional
 
 import attr
 from attr import attrib, attrs
