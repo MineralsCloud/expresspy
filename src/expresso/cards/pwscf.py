@@ -113,16 +113,16 @@ class KPoints(Card):
     def __len__(self) -> Optional[int]:
         if self.option == "automatic":
             return None
-        if self.option in ("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c"):
-            return self.points.__len__()
         if self.option == "gamma":
             return 1
+        else:  # `self.option` in `("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")`
+            return self.points.__len__()
 
     def to_qe(self):
         if self.option == "gamma":
             return ""
         if self.option == "automatic":
-            return "{} {}".format(self.grid, self.offsets)
+            return "{} {}".format(self.points.grid, self.points.offsets)
         else:
             return textwrap.dedent(f"""\
             {self._name} {self.option}
