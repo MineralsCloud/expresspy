@@ -88,7 +88,7 @@ class KPoints(Card):
     _name: str = "K_POINTS"
     _allowed_options = ("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
     option: str = attrib(default="tpiba", validator=attr.validators.in_(_allowed_options))
-    points = attrib()
+    points = attrib(factory=list)
 
     @points.validator
     def _check_points(self, attribute, value):
