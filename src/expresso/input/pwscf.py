@@ -3,6 +3,7 @@
 
 from typing import Dict
 
+import attr
 from attr import attrib, attrs
 from src.expresso.cards import AtomicPosition, AtomicSpecies, Card, KPoints
 from src.expresso.namelists import (ControlNamelist, ElectronsNamelist,
@@ -35,3 +36,6 @@ class PWscfInput(object):
                     isinstance(value["ATOMIC_POSITIONS"], AtomicPosition),
                     isinstance(value["K_POINTS"], KPoints)]):
             raise ValueError
+
+    def to_dict(self):
+        return attr.asdict(self)
