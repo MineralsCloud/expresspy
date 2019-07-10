@@ -72,7 +72,7 @@ class AtomicPositionCard(Card):
 
 
 @attrs(frozen=True)
-class LatticeParameters(object):
+class CellParameters(object):
     a = attrib(converter=float)
     b = attrib(converter=float)
     c = attrib(converter=float)
@@ -117,7 +117,7 @@ class CellParametersCard(Card):
 
     @property
     def lattice_parameters(self):
-        return LatticeParameters(*self.lattice.lattice_parameters)
+        return CellParameters(*self.lattice.lattice_parameters)
 
     @property
     def lattice_system(self):
