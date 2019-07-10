@@ -7,7 +7,7 @@ from typing import Optional
 
 import attr
 from attr import attrib, attrs
-from expresso.cards.base import Card
+from expresspy.cards.base import Card
 from singleton_decorator import singleton
 
 __all__ = [

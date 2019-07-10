@@ -10,6 +10,6 @@ except DistributionNotFound:
 finally:
     del get_distribution, DistributionNotFound
 
-import expresso.namelists
-import expresso.cards
-import expresso.input
+import expresspy.namelists
+import expresspy.cards
+import expresspy.input
