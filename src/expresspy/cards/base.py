@@ -84,20 +84,25 @@ class Card(object):
 class AtomicSpecies(Card):
     _name: str = "ATOMIC_SPECIES"
     atoms: List[Element] = attrib(factory=list)
+    masses: List[float] = attrib(factory=list)
     pseudopotentials: List[str] = attrib(factory=list)
 
+    @masses.validator
+    def _check_length_match(self, attribute, value):
+        if not len(value) == len(self.atoms):
+            raise ValueError("Length mismatch!")
+
     @pseudopotentials.validator
-    def _check_length_equal(self, attribute, value):
+    def _check_length_match(self, attribute, value):
         if not len(value) == len(self.atoms):
             raise ValueError("Length mismatch!")
 
     @property
     def data(self):
-        return list(zip(self.atoms, self.pseudopotentials))
+        return list(zip(self.atoms, self.masses, self.pseudopotentials))
 
-    def __iter__(self):
-        yield self.atoms
-        yield self.pseudopotentials
+    def __getitem__(self, item):
+        return self.data.__getitem__(item)
 
     def __len__(self):
         return self.data.__len__()
