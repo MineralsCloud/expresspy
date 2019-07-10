@@ -40,8 +40,8 @@ class LatticeParameters(object):
     def to_tuple(self):
         return attr.astuple(self)
 
-    def __getitem__(self, i):
-        return self.to_tuple()[i]
+    def __getitem__(self, item):
+        return self.to_tuple().__getitem__(item)
 
 
 @attrs(frozen=True)
