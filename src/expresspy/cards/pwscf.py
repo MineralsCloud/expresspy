@@ -9,7 +9,7 @@ from typing import List, Optional
 import attr
 import numpy as np
 from attr import attrib, attrs
-from crystals import Atom, Lattice
+from crystals import Lattice
 from expresspy.cards.base import Card
 from expresspy.typeconversion import to_fortran
 from singleton_decorator import singleton
@@ -78,17 +78,24 @@ class AtomicSpeciesCard(Card):
         return "\n".join(f"{x}" for x in self.data)
 
 
+@attrs(frozen=True)
+class AtomicPosition(object):
+    atom: str = attrib(converter=str)
+    position: List[float] = attrib(factory=list, validator=lambda x: len(x) == 3)
+
+    def to_qe(self) -> str:
+        return f"{self.atom}  " + "  ".join(map(to_fortran, self.position))
+
+
 @attrs
 class AtomicPositionCard(Card):
     _name: str = "ATOMIC_POSITIONS"
     _allowed_options = ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
-    atoms: List[Atom] = attrib(factory=list)
+    data: List[AtomicPosition] = attrib(factory=list)
 
     def to_qe(self):
-        return textwrap.dedent(f"""\
-        {self._name} {self.option}
-        """ + f"{x}" for x in self.atoms)
+        return "\n".join(f"{x}" for x in self.data)
 
 
 @attrs
