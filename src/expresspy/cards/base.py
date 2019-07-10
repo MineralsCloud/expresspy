@@ -43,6 +43,9 @@ class LatticeParameters(object):
     def __getitem__(self, item):
         return self.to_tuple().__getitem__(item)
 
+    def __len__(self):
+        return self.to_tuple().__len__()
+
 
 @attrs(frozen=True)
 class Card(object):
