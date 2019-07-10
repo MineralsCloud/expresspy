@@ -4,7 +4,6 @@
 
 import re
 import textwrap
-from collections import namedtuple
 from typing import List, Optional
 
 import attr
@@ -20,7 +19,18 @@ __all__ = [
     'CellParameters'
 ]
 
-LatticeParameters = namedtuple('LatticeParameters', ['a', 'b', 'c', 'alpha', 'beta', 'gamma'])
+
+@attrs(frozen=True)
+class LatticeParameters(object):
+    a = attrib(convert=float)
+    b = attrib(convert=float)
+    c = attrib(convert=float)
+    alpha = attrib(convert=float)
+    beta = attrib(convert=float)
+    gamma = attrib(convert=float)
+
+    def to_tuple(self):
+        return attr.astuple(self)
 
 
 @attrs(frozen=True)
@@ -120,27 +130,27 @@ class CellParameters(Card):
 
     @property
     def lattice_system(self):
-        return Lattice.from_parameters(*self.lattice_parameters).lattice_system
+        return Lattice.from_parameters(*self.lattice_parameters.to_tuple()).lattice_system
 
     @property
     def lattice_vectors(self):
-        return Lattice.from_parameters(*self.lattice_parameters).lattice_vectors
+        return Lattice.from_parameters(*self.lattice_parameters.to_tuple()).lattice_vectors
 
     @property
     def periodicity(self):
-        return Lattice.from_parameters(*self.lattice_parameters).periodicity
+        return Lattice.from_parameters(*self.lattice_parameters.to_tuple()).periodicity
 
     @property
     def reciprocal_lattice(self):
-        return Lattice.from_parameters(*self.lattice_parameters).reciprocal
+        return Lattice.from_parameters(*self.lattice_parameters.to_tuple()).reciprocal
 
     @property
     def reciprocal_vectors(self):
-        return Lattice.from_parameters(*self.lattice_parameters).reciprocal_vectors
+        return Lattice.from_parameters(*self.lattice_parameters.to_tuple()).reciprocal_vectors
 
     @property
     def volume(self):
-        return Lattice.from_parameters(*self.lattice_parameters).volume
+        return Lattice.from_parameters(*self.lattice_parameters.to_tuple()).volume
 
     def to_qe(self):
         return re.sub("[\[\]]", ' ',
