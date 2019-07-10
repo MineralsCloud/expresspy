@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "expresso"
+name = "expresspy"
 version = "0.1.0"
 description = ""
 authors = ["Qi Zhang <singularitti@outlook.com>"]
