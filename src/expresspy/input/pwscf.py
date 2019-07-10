@@ -5,7 +5,7 @@ from typing import Dict
 
 import attr
 from attr import attrib, attrs
-from expresspy.cards import AtomicPosition, AtomicSpecies, Card, KPoints
+from expresspy.cards import AtomicPositionCard, AtomicSpeciesCard, Card, KPointsCard
 from expresspy.namelists import (ControlNamelist, ElectronsNamelist, Namelist,
                                  SystemNamelist)
 
@@ -32,9 +32,9 @@ class PWscfInput(object):
     def _check_must_contain(self, attribute, value):
         if {"ATOMIC_SPECIES", "ATOMIC_POSITIONS", "K_POINTS"}.difference(set(value.keys())) != set():
             raise ValueError
-        if not all([isinstance(value["ATOMIC_SPECIES"], AtomicSpecies),
-                    isinstance(value["ATOMIC_POSITIONS"], AtomicPosition),
-                    isinstance(value["K_POINTS"], KPoints)]):
+        if not all([isinstance(value["ATOMIC_SPECIES"], AtomicSpeciesCard),
+                    isinstance(value["ATOMIC_POSITIONS"], AtomicPositionCard),
+                    isinstance(value["K_POINTS"], KPointsCard)]):
             raise ValueError
 
     def to_dict(self):
