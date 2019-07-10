@@ -4,7 +4,7 @@
 from typing import List
 
 from attr import attrib, attrs
-from src.expresso.namelists import Namelist
+from expresso.namelists import Namelist
 
 __all__ = [
     'ControlNamelist',
