@@ -5,9 +5,9 @@ from typing import Dict
 
 import attr
 from attr import attrib, attrs
-from expresso.cards import AtomicPosition, AtomicSpecies, Card, KPoints
-from expresso.namelists import (ControlNamelist, ElectronsNamelist, Namelist,
-                                SystemNamelist)
+from expresspy.cards import AtomicPosition, AtomicSpecies, Card, KPoints
+from expresspy.namelists import (ControlNamelist, ElectronsNamelist, Namelist,
+                                 SystemNamelist)
 
 __all__ = [
     'PWscfInput'

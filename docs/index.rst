@@ -1,8 +1,8 @@
-========
-expresso
-========
+=========
+expresspy
+=========
 
-This is the documentation of **expresso**.
+This is the documentation of **expresspy**.
 
 .. note::
 
