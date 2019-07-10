@@ -22,15 +22,26 @@ __all__ = [
 
 @attrs(frozen=True)
 class LatticeParameters(object):
-    a = attrib(convert=float)
-    b = attrib(convert=float)
-    c = attrib(convert=float)
-    alpha = attrib(convert=float)
-    beta = attrib(convert=float)
-    gamma = attrib(convert=float)
+    a = attrib(converter=float)
+    b = attrib(converter=float)
+    c = attrib(converter=float)
+    alpha = attrib(converter=float)
+    beta = attrib(converter=float)
+    gamma = attrib(converter=float)
+
+    @property
+    def edges(self):
+        return [self.a, self.b, self.c]
+
+    @property
+    def angles(self):
+        return [self.alpha, self.beta, self.gamma]
 
     def to_tuple(self):
         return attr.astuple(self)
+
+    def __getitem__(self, i):
+        return self.to_tuple()[i]
 
 
 @attrs(frozen=True)
