@@ -54,6 +54,7 @@ class LatticeParameters(object):
 @attrs
 class AtomicSpecies(Card):
     _name: str = "ATOMIC_SPECIES"
+    option = None
     atoms: List[Element] = attrib(factory=list)
     masses: List[float] = attrib(factory=list)
     pseudopotentials: List[str] = attrib(factory=list)
