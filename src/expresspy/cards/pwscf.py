@@ -9,8 +9,9 @@ from typing import List, Optional
 import attr
 import numpy as np
 from attr import attrib, attrs
-from crystals import Element, Atom, Lattice
+from crystals import Atom, Lattice
 from expresspy.cards.base import Card
+from expresspy.typeconversion import to_fortran
 from singleton_decorator import singleton
 
 __all__ = [
@@ -51,27 +52,21 @@ class LatticeParameters(object):
         return self.to_tuple().__len__()
 
 
+@attrs(frozen=True)
+class AtomicSpecies(object):
+    atom: str = attrib(converter=str)
+    mass: float = attrib(converter=float)
+    pseudopotential: str = attrib(converter=str)
+
+    def to_qe(self) -> str:
+        return f"{self.atom}  {to_fortran(self.mass)}  {self.pseudopotential}"
+
+
 @attrs
 class AtomicSpeciesCard(Card):
     _name: str = "ATOMIC_SPECIES"
     option = None
-    atoms: List[Element] = attrib(factory=list)
-    masses: List[float] = attrib(factory=list)
-    pseudopotentials: List[str] = attrib(factory=list)
-
-    @masses.validator
-    def _check_length_match(self, attribute, value):
-        if not len(value) == len(self.atoms):
-            raise ValueError("Length mismatch!")
-
-    @pseudopotentials.validator
-    def _check_length_match(self, attribute, value):
-        if not len(value) == len(self.atoms):
-            raise ValueError("Length mismatch!")
-
-    @property
-    def data(self):
-        return list(zip(self.atoms, self.masses, self.pseudopotentials))
+    data: List[AtomicSpecies] = attrib(factory=list)
 
     def __getitem__(self, item):
         return self.data.__getitem__(item)
@@ -80,9 +75,7 @@ class AtomicSpeciesCard(Card):
         return self.data.__len__()
 
     def to_qe(self):
-        return textwrap.dedent(f"""\
-        {self._name}
-        """ + f"{x}" for x in self.data)
+        return "\n".join(f"{x}" for x in self.data)
 
 
 @attrs
