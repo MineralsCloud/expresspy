@@ -17,10 +17,10 @@ __all__ = [
     'LatticeParameters',
     'SpecialKPoint',
     'MonkhorstPackGrid',
-    'KPoints',
-    'AtomicSpecies',
-    'AtomicPosition',
-    'CellParameters'
+    'KPointsCard',
+    'AtomicSpeciesCard',
+    'AtomicPositionCard',
+    'CellParametersCard'
 ]
 
 
@@ -52,7 +52,7 @@ class LatticeParameters(object):
 
 
 @attrs
-class AtomicSpecies(Card):
+class AtomicSpeciesCard(Card):
     _name: str = "ATOMIC_SPECIES"
     option = None
     atoms: List[Element] = attrib(factory=list)
@@ -86,7 +86,7 @@ class AtomicSpecies(Card):
 
 
 @attrs
-class AtomicPosition(Card):
+class AtomicPositionCard(Card):
     _name: str = "ATOMIC_POSITIONS"
     _allowed_options = ("alat", "bohr", "angstrom", "crystal", "crystal_sg")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
@@ -99,7 +99,7 @@ class AtomicPosition(Card):
 
 
 @attrs
-class CellParameters(Card):
+class CellParametersCard(Card):
     _name: str = "CELL_PARAMETERS"
     _allowed_options = ("alat", "bohr", "angstrom")
     option: str = attrib(default="alat", validator=attr.validators.in_(_allowed_options))
@@ -215,7 +215,7 @@ class SpecialKPoint(object):
 
 
 @attrs
-class KPoints(Card):
+class KPointsCard(Card):
     _name: str = "K_POINTS"
     _allowed_options = ("tpiba", "automatic", "crystal", "gamma", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")
     option: str = attrib(default="tpiba", validator=attr.validators.in_(_allowed_options))
