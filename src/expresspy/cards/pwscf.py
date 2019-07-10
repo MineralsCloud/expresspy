@@ -15,13 +15,16 @@ from expresspy.typeconversion import to_fortran
 from singleton_decorator import singleton
 
 __all__ = [
-    'LatticeParameters',
-    'SpecialKPoint',
-    'MonkhorstPackGrid',
-    'KPointsCard',
+    'AtomicSpecies',
     'AtomicSpeciesCard',
+    'AtomicPosition',
     'AtomicPositionCard',
-    'CellParametersCard'
+    'CellParameters',
+    'CellParametersCard',
+    'MonkhorstPackGrid',
+    'GammaPoint',
+    'SpecialKPoint',
+    'KPointsCard'
 ]
 
 
