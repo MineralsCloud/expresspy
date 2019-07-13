@@ -104,11 +104,13 @@ class PWscfInputLexer:
 
         :return: All namelists found in the input.
         """
-        keys = list(self.get_namelist_identifier_positions().keys())
+        keys = self.get_namelist_identifier_positions().keys()
+        if not isempty({"CONTROL", "SYSTEM", "ELECTRONS"}.difference(set(keys))):
+            raise RuntimeError("Namelists must contain 'CONTROL', 'SYSTEM' and 'ELECTRONS'!")
         for i, k in enumerate(keys):
             if not k == self.namelist_identifiers[i]:
                 # Namelists must appear in the order given below.
-                raise RuntimeError("Namelists Must be in order 'CONTROL', 'SYSTEM', 'ELECTRONS', 'IONS', 'CELL'!")
+                raise RuntimeError("Namelists must be in order 'CONTROL', 'SYSTEM', 'ELECTRONS', 'IONS', 'CELL'!")
         else:
             return tuple(map(lambda s: s[1:], keys))
 
@@ -285,3 +287,11 @@ class PWscfInputLexer:
                     v1, v2, v3 = re.match("(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*", line.strip()).groups()
                     cell_params.append([v1, v2, v3])
             return np.array(cell_params), option
+
+
+def isempty(iterable):
+    if not any(isinstance(iterable, x) for x in (set, dict, list, tuple, str)):
+        raise TypeError("This type is not valid!")
+    if not iterable:
+        return True
+    return False
