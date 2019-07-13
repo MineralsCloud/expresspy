@@ -10,6 +10,7 @@ from collections import namedtuple, OrderedDict
 from typing import *
 
 import f90nml
+import numpy as np
 from expresspy.cards import MonkhorstPackGrid, AtomicSpecies, AtomicPosition
 
 
