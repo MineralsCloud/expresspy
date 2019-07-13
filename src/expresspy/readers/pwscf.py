@@ -115,19 +115,18 @@ class PWscfInputLexer:
             return tuple(map(lambda s: s[1:], keys))
 
     @property
-    def cards_found(self) -> Optional[Set[str]]:
+    def cards_found(self) -> Tuple[str, ...]:
         """
         Check whether an input contains all the cards necessary for Quantum ESPRESSO to do computations. If the
         input is validated, all cards found in the input will be returned.
 
         :return: All cards found in the input.
         """
-        keys = set(self.get_card_identifier_positions().keys())
-        if keys < {'ATOMIC_SPECIES', 'ATOMIC_POSITIONS', 'K_POINTS'}:
-            # 'ATOMIC_SPECIES', 'ATOMIC_POSITIONS', and 'K_POINTS' are necessary cards.
-            warnings.warn('Not enough necessary cards given!')
+        keys = self.get_card_identifier_positions().keys()
+        if not isempty({"ATOMIC_SPECIES", "ATOMIC_POSITIONS", "K_POINTS"}.difference(set(keys))):
+            raise RuntimeError("'ATOMIC_SPECIES', 'ATOMIC_POSITIONS', and 'K_POINTS' are necessary cards!")
         else:
-            return keys
+            return tuple(keys)
 
     def get_comment(self, include_heading: bool = True, include_ending: bool = False):
         pass
