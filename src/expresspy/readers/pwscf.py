@@ -97,7 +97,7 @@ class PWscfInputLexer:
         return OrderedDict(zip(keys, (RangeIndices(begin=b, end=e) for b, e in zip(start_indices, end_indices))))
 
     @property
-    def namelists_found(self) -> Optional[Set[str]]:
+    def namelists_found(self) -> Tuple[str, ...]:
         """
         Check whether an input contains all the namelists necessary for Quantum ESPRESSO to do computations. If the
         input is validated, all namelists found in the input will be returned.
@@ -110,7 +110,7 @@ class PWscfInputLexer:
                 # Namelists must appear in the order given below.
                 raise RuntimeError("Namelists Must be in order 'CONTROL', 'SYSTEM', 'ELECTRONS', 'IONS', 'CELL'!")
         else:
-            return set(map(lambda s: s[1:], keys))
+            return tuple(map(lambda s: s[1:], keys))
 
     @property
     def cards_found(self) -> Optional[Set[str]]:
