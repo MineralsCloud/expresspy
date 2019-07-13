@@ -31,6 +31,10 @@ class PWscfInputLexer:
             self.__text_stream = io.StringIO(f.read())
 
     @property
+    def text_content(self):
+        return self.__text_stream.getvalue()
+
+    @property
     def namelist_identifiers(self) -> Tuple[str, ...]:
         return '&CONTROL', '&SYSTEM', '&ELECTRONS', '&IONS', '&CELL'
 
@@ -54,7 +58,7 @@ class PWscfInputLexer:
         """
         match_records = dict()
         identifiers: Tuple[str, ...] = self.namelist_identifiers
-        s: str = self.__text_stream.getvalue()
+        s: str = self.text_content
         for pattern in identifiers:
             # ``re.compile`` will produce a regular expression object, on which we can use its ``search`` method.
             m0 = re.compile(pattern, flags=re.IGNORECASE).search(s, match_records.get(pattern, pos))
@@ -83,7 +87,7 @@ class PWscfInputLexer:
         """
         match_records = dict()
         identifiers: Tuple[str, ...] = self.card_identifiers
-        s: str = self.__text_stream.getvalue()
+        s: str = self.text_content
         if not pos:
             pos = list(self.get_namelist_identifier_positions().values())[-1].end
         for pattern in identifiers:
@@ -136,7 +140,7 @@ class PWscfInputLexer:
     def __get_card(self, identifier) -> Optional[List[str]]:
         if identifier in self.cards_found:
             begin, end = self.get_card_identifier_positions()[identifier]
-            return re.split(self.newline, self.__text_stream.getvalue()[begin:end])
+            return re.split(self.newline, self.text_content[begin:end])
         else:
             warnings.warn("Identifier '{0}' is not found in input!".format(identifier), stacklevel=2)
 
