@@ -27,12 +27,12 @@ class PWscfInputLexer:
     def __init__(self, inp: Optional[str] = None, **kwargs):
         self.newline = "[\r\n,]"  # TODO: This will fail when ',' is inside a value of a parameter.
         self.namelist_sep = r"/\s*[\r\n]"
-        with open(inp) as f:
-            self.__text_stream = io.StringIO(f.read())
+        self._input = inp
 
     @property
     def text_content(self):
-        return self.__text_stream.getvalue()
+        with open(self._input) as f:
+            return io.StringIO(f.read()).getvalue()
 
     @property
     def namelist_identifiers(self) -> Tuple[str, ...]:
