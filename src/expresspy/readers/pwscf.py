@@ -222,7 +222,6 @@ class PWscfInputLexer:
                         warnings.warn("No match found in the line {0}!".format(line))
                     else:
                         name, x, y, z = match.groups()
-                        print(name, x, y, z)
                         atomic_positions.append(AtomicPosition(atom=name, position=[x, y, z]))
             return AtomicPositionCard(option=option, data=atomic_positions)
 
