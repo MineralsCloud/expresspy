@@ -110,7 +110,7 @@ class PWscfInputLexer:
         :return: All namelists found in the input.
         """
         keys = self.get_namelist_identifier_positions().keys()
-        if not isempty({"CONTROL", "SYSTEM", "ELECTRONS"}.difference(set(keys))):
+        if not isempty({"&CONTROL", "&SYSTEM", "&ELECTRONS"}.difference(set(keys))):
             raise RuntimeError("Namelists must contain 'CONTROL', 'SYSTEM' and 'ELECTRONS'!")
         for i, k in enumerate(keys):
             if not k == self.namelist_identifiers[i]:
@@ -171,7 +171,7 @@ class PWscfInputLexer:
         Note you cannot write more than one parameter in each line!
         :return: a dictionary that stores the inputted information of the intended card
         """
-        return dict(f90nml.read(self.input))
+        return OrderedDict(f90nml.read(self.input))
 
     def lex_atomic_species(self) -> Optional[List[AtomicSpecies]]:
         s: Optional[List[str]] = self.get_atomic_species()
