@@ -171,7 +171,7 @@ class PWscfInputLexer:
         Note you cannot write more than one parameter in each line!
         :return: a dictionary that stores the inputted information of the intended card
         """
-        return f90nml.read(self.input)
+        return dict(f90nml.read(self.input))
 
     def lex_atomic_species(self) -> Optional[List[AtomicSpecies]]:
         s: Optional[List[str]] = self.get_atomic_species()
