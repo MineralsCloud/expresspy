@@ -133,10 +133,6 @@ class PWscfInputLexer:
         else:
             return tuple(keys)
 
-    def get_comment(self, include_heading: bool = True, include_ending: bool = False):
-        pass
-        # return self._section_with_bounds('!', '\R', include_heading, include_ending)
-
     def __get_card(self, identifier) -> Optional[List[str]]:
         if identifier in self.cards_found:
             begin, end = self.get_card_identifier_positions()[identifier]
