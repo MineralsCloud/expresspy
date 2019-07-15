@@ -27,11 +27,11 @@ class PWscfInputLexer:
     def __init__(self, inp: Optional[str] = None, **kwargs):
         self.newline = "[\r\n,]"  # TODO: This will fail when ',' is inside a value of a parameter.
         self.namelist_sep = r"/\s*[\r\n]"
-        self._input = inp
+        self.input = inp
 
     @property
     def text_content(self):
-        with open(self._input) as f:
+        with open(self.input) as f:
             return io.StringIO(f.read()).getvalue()
 
     @property
@@ -171,7 +171,7 @@ class PWscfInputLexer:
         Note you cannot write more than one parameter in each line!
         :return: a dictionary that stores the inputted information of the intended card
         """
-        return f90nml.read(self.__text_stream)
+        return f90nml.read(self.input)
 
     def lex_atomic_species(self) -> Optional[List[AtomicSpecies]]:
         s: Optional[List[str]] = self.get_atomic_species()
