@@ -11,7 +11,8 @@ from typing import *
 
 import f90nml
 import numpy as np
-from expresspy.cards import MonkhorstPackGrid, AtomicSpecies, AtomicPosition
+from expresspy.cards import MonkhorstPackGrid, AtomicSpecies, AtomicPosition, CellParametersCard, \
+    KPointsCard, GammaPoint, AtomicSpeciesCard, AtomicPositionCard
 
 
 class RangeIndices(namedtuple('RangeIndices', ['begin', 'end'])):
@@ -169,7 +170,7 @@ class PWscfInputLexer:
         """
         return OrderedDict(f90nml.read(self.input))
 
-    def lex_atomic_species(self) -> Optional[List[AtomicSpecies]]:
+    def lex_atomic_species(self):
         s: Optional[List[str]] = self.get_atomic_species()
         if not s:  # If the returned result is ``None``.
             warnings.warn("'ATOMIC_SPECIES' not found in input!", stacklevel=2)
@@ -185,9 +186,9 @@ class PWscfInputLexer:
                 else:
                     name, mass, pseudopotential = match.groups()
                     atomic_species.append(AtomicSpecies(name, mass, pseudopotential))
-            return atomic_species
+            return AtomicSpeciesCard(data=atomic_species)
 
-    def lex_atomic_positions(self) -> Optional[Tuple[List[AtomicPosition], str]]:
+    def lex_atomic_positions(self):
         s: Optional[List[str]] = self.get_atomic_positions()
         if not s:  # If the returned result is ``None``.
             warnings.warn("'ATOMIC_POSITIONS' not found in input!", stacklevel=2)
@@ -214,18 +215,19 @@ class PWscfInputLexer:
                         "(\w+)\s*(-?\d+\.\d+)\s*(-?\d+\.\d+)\s*(-?\d+\.\d+)\s*{\s*([01])?\s*([01])?\s*([01])?\s*}",
                         line.strip())
                     name, x, y, z, if_pos1, if_pos2, if_pos3 = match.groups()
-                    atomic_positions.append(AtomicPosition(name, [x, y, z], [if_pos1, if_pos2, if_pos3]))
+                    atomic_positions.append(AtomicPosition(atom=name, position=[x, y, z]))
                 else:
                     match = re.match("(\w+)\s*(-?\d+\.\d+)\s*(-?\d+\.\d+)\s*(-?\d+\.\d+)", line.strip())
                     if match is None:
                         warnings.warn("No match found in the line {0}!".format(line))
                     else:
                         name, x, y, z = match.groups()
-                        atomic_positions.append(AtomicPosition(name, [x, y, z], ['1', '1', '1']))
-            return atomic_positions, option
+                        print(name, x, y, z)
+                        atomic_positions.append(AtomicPosition(atom=name, position=[x, y, z]))
+            return AtomicPositionCard(option=option, data=atomic_positions)
 
     # TODO: finish this method
-    def lex_k_points(self) -> Union[None, str, Tuple[MonkhorstPackGrid, str]]:
+    def lex_k_points(self):
         """
         Find 'K_POINTS' line in the file, and read the k-mesh.
         We allow options and comments on the same line as 'K_POINTS':
@@ -244,7 +246,7 @@ class PWscfInputLexer:
         if option == '':
             raise RuntimeError("Option is not given! you must give one!")
         elif option == 'gamma':
-            return option
+            return KPointsCard(option=option, points=GammaPoint())
         elif option == 'automatic':
             for line in s[1:]:
                 if line.strip() == '' or line.strip().startswith('!'):
@@ -252,8 +254,8 @@ class PWscfInputLexer:
                 if line.strip() == '/':
                     raise RuntimeError('Do not start any line in cards with a "/" character!')
                 line = line.split()
-                grid, offsets = line[0:3], line[3:7]
-                return MonkhorstPackGrid(grid=grid, offsets=offsets), option
+                grid, offsets = list(map(int, line[0:3])), list(map(int, line[3:7]))
+                return KPointsCard(option=option, points=MonkhorstPackGrid(grid=grid, offsets=offsets))
         elif option in {'tpiba', 'crystal', 'tpiba_b', 'crystal_b', 'tpiba_c', 'crystal_c'}:
             return NotImplemented
         else:
@@ -286,7 +288,7 @@ class PWscfInputLexer:
                 if re.match("(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*", line.strip()):
                     v1, v2, v3 = re.match("(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*", line.strip()).groups()
                     cell_params.append([v1, v2, v3])
-            return np.array(cell_params), option
+            return CellParametersCard.from_array(option, np.array(cell_params))
 
 
 def isempty(iterable):
