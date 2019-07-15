@@ -294,8 +294,6 @@ class PWscfInputLexer:
 
 
 def isempty(iterable):
-    if not any(isinstance(iterable, x) for x in (set, dict, list, tuple, str)):
-        raise TypeError("This type is not valid!")
-    if not iterable:
+    if len(iterable) == 0:
         return True
     return False
