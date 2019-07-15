@@ -58,7 +58,12 @@ class AtomicSpeciesCard(Card):
 @attrs(frozen=True)
 class AtomicPosition(object):
     atom: str = attrib(converter=str)
-    position: List[float] = attrib(factory=list, validator=lambda x: len(x) == 3)
+    position: List[float] = attrib(factory=list)
+
+    @position.validator
+    def _check_length(self, attribute, value):
+        if not len(value) == 3:
+            return ValueError
 
     def to_qe(self) -> str:
         return f"{self.atom}  " + "  ".join(map(to_fortran, self.position))
