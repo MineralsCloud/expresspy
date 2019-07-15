@@ -229,7 +229,7 @@ class KPointsCard(Card):
         if self.option == "automatic":
             if not isinstance(value, MonkhorstPackGrid):
                 raise TypeError
-        if self.option == "gamma":
+        elif self.option == "gamma":
             if not isinstance(value, GammaPoint):
                 raise TypeError
         else:  # `self.option` in `("tpiba", "crystal", "tpiba_b", "crystal_b", "tpiba_c", "crystal_c")`
