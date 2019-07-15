@@ -9,6 +9,7 @@ from typing import List, Optional
 import attr
 import numpy as np
 from attr import attrib, attrs
+from attr.validators import instance_of, deep_iterable
 from crystals import Lattice
 from expresspy.cards.base import Card
 from expresspy.typeconversion import to_fortran
@@ -57,7 +58,12 @@ class AtomicSpeciesCard(Card):
 @attrs(frozen=True)
 class AtomicPosition(object):
     atom: str = attrib(converter=str)
-    position: List[float] = attrib(factory=list, validator=lambda x: len(x) == 3)
+    position: List[float] = attrib(factory=list)
+
+    @position.validator
+    def _check_length(self, attribute, value):
+        if not len(value) == 3:
+            return ValueError
 
     def to_qe(self) -> str:
         return f"{self.atom}  " + "  ".join(map(to_fortran, self.position))
@@ -153,13 +159,13 @@ class CellParametersCard(Card):
 
 @attrs
 class MonkhorstPackGrid(object):
-    grid = attrib(validator=attr.validators.deep_iterable(
-        member_validator=attr.validators.instance_of(int),
-        iterable_validator=attr.validators.instance_of(list)
+    grid = attrib(validator=deep_iterable(
+        member_validator=instance_of(int),
+        iterable_validator=instance_of(list)
     ))
-    offsets = attrib(validator=attr.validators.deep_iterable(
-        member_validator=attr.validators.instance_of(int),
-        iterable_validator=attr.validators.instance_of(list)
+    offsets = attrib(validator=deep_iterable(
+        member_validator=instance_of(int),
+        iterable_validator=instance_of(list)
     ))
 
     @property
@@ -194,11 +200,11 @@ class GammaPoint(object):
 
 @attrs
 class SpecialKPoint(object):
-    coordinates = attrib(validator=attr.validators.deep_iterable(
-        member_validator=attr.validators.instance_of(float),
-        iterable_validator=attr.validators.instance_of(list)
+    coordinates = attrib(validator=deep_iterable(
+        member_validator=instance_of(float),
+        iterable_validator=instance_of(list)
     ))
-    weight = attrib(validator=attr.validators.instance_of(float))
+    weight = attrib(validator=instance_of(float))
 
     @property
     def x(self):
