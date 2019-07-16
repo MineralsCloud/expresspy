@@ -15,6 +15,14 @@ from expresspy.cards import MonkhorstPackGrid, AtomicSpecies, AtomicPosition, Ce
     KPointsCard, GammaPoint, AtomicSpeciesCard, AtomicPositionCard
 
 
+def namelist_identifiers() -> Tuple[str, ...]:
+    return '&CONTROL', '&SYSTEM', '&ELECTRONS', '&IONS', '&CELL'
+
+
+def card_identifiers() -> Tuple[str, ...]:
+    return 'ATOMIC_SPECIES', 'ATOMIC_POSITIONS', 'K_POINTS', 'CELL_PARAMETERS', 'OCCUPATIONS', 'CONSTRAINTS', 'ATOMIC_FORCES'
+
+
 class RangeIndices(namedtuple('RangeIndices', ['begin', 'end'])):
     def __str__(self) -> str:
         return "'begin: {0}, end: {1}'".format(self.begin, self.end)
@@ -35,14 +43,6 @@ class PWscfInputReader(object):
         with open(self.input) as f:
             return io.StringIO(f.read()).getvalue()
 
-    @property
-    def namelist_identifiers(self) -> Tuple[str, ...]:
-        return '&CONTROL', '&SYSTEM', '&ELECTRONS', '&IONS', '&CELL'
-
-    @property
-    def card_identifiers(self) -> Tuple[str, ...]:
-        return 'ATOMIC_SPECIES', 'ATOMIC_POSITIONS', 'K_POINTS', 'CELL_PARAMETERS', 'OCCUPATIONS', 'CONSTRAINTS', 'ATOMIC_FORCES'
-
     def get_namelist_identifier_positions(self, pos: int = 0, include_heading: bool = True,
                                           include_ending: bool = False) -> MutableMapping[str, RangeIndices]:
         """
@@ -58,7 +58,7 @@ class PWscfInputReader(object):
         :return:
         """
         match_records = dict()
-        identifiers: Tuple[str, ...] = self.namelist_identifiers
+        identifiers: Tuple[str, ...] = namelist_identifiers()
         s: str = self.text_content
         for pattern in identifiers:
             # ``re.compile`` will produce a regular expression object, on which we can use its ``search`` method.
@@ -87,7 +87,7 @@ class PWscfInputReader(object):
         :return:
         """
         match_records = dict()
-        identifiers: Tuple[str, ...] = self.card_identifiers
+        identifiers: Tuple[str, ...] = card_identifiers()
         s: str = self.text_content
         if not pos:
             pos = list(self.get_namelist_identifier_positions().values())[-1].end
@@ -114,7 +114,7 @@ class PWscfInputReader(object):
         if not isempty({"&CONTROL", "&SYSTEM", "&ELECTRONS"}.difference(set(keys))):
             raise RuntimeError("Namelists must contain 'CONTROL', 'SYSTEM' and 'ELECTRONS'!")
         for i, k in enumerate(keys):
-            if not k == self.namelist_identifiers[i]:
+            if not k == namelist_identifiers()[i]:
                 # Namelists must appear in the order given below.
                 raise RuntimeError("Namelists must be in order 'CONTROL', 'SYSTEM', 'ELECTRONS', 'IONS', 'CELL'!")
         else:
