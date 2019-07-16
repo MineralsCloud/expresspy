@@ -20,9 +20,9 @@ class RangeIndices(namedtuple('RangeIndices', ['begin', 'end'])):
         return "'begin: {0}, end: {1}'".format(self.begin, self.end)
 
 
-class PWscfInputLexer(object):
+class PWscfInputReader(object):
     """
-    This class reads a standard Quantum ESPRESSO PWscf input file or string in, and lex it.
+    This class reads a standard Quantum ESPRESSO PWscf input file or string in, and read it.
     """
 
     def __init__(self, inp: Optional[str] = None, **kwargs):
@@ -162,7 +162,7 @@ class PWscfInputLexer(object):
     def get_atomic_forces(self):
         return self.__get_card('ATOMIC_FORCES')
 
-    def lex_namelist(self):
+    def read_namelists(self):
         """
         A generic method to read a namelist.
         Note you cannot write more than one parameter in each line!
@@ -170,7 +170,7 @@ class PWscfInputLexer(object):
         """
         return OrderedDict(f90nml.read(self.input))
 
-    def lex_atomic_species(self):
+    def read_atomic_species(self):
         s: Optional[List[str]] = self.get_atomic_species()
         if not s:  # If the returned result is ``None``.
             warnings.warn("'ATOMIC_SPECIES' not found in input!", stacklevel=2)
@@ -188,7 +188,7 @@ class PWscfInputLexer(object):
                     atomic_species.append(AtomicSpecies(name, mass, pseudopotential))
             return AtomicSpeciesCard(data=atomic_species)
 
-    def lex_atomic_positions(self):
+    def read_atomic_positions(self):
         s: Optional[List[str]] = self.get_atomic_positions()
         if not s:  # If the returned result is ``None``.
             warnings.warn("'ATOMIC_POSITIONS' not found in input!", stacklevel=2)
@@ -226,7 +226,7 @@ class PWscfInputLexer(object):
             return AtomicPositionCard(option=option, data=atomic_positions)
 
     # TODO: finish this method
-    def lex_k_points(self):
+    def read_kpoints(self):
         """
         Find 'K_POINTS' line in the file, and read the k-mesh.
         We allow options and comments on the same line as 'K_POINTS':
@@ -260,7 +260,7 @@ class PWscfInputLexer(object):
         else:
             raise ValueError("Unknown option '{0}' given!".format(option))
 
-    def lex_cell_parameters(self):
+    def read_cellparameters(self):
         """
         Read 3 lines that follows 'CELL_PARAMETERS' string, so there must be no empty line between 'CELL_PARAMETERS' and
         the real cell parameters!
