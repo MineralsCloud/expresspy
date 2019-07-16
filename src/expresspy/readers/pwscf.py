@@ -13,6 +13,7 @@ import f90nml
 import numpy as np
 from expresspy.cards import MonkhorstPackGrid, AtomicSpecies, AtomicPosition, CellParametersCard, \
     KPointsCard, GammaPoint, AtomicSpeciesCard, AtomicPositionCard
+from expresspy.input import PWscfInput
 
 
 def namelist_identifiers() -> Tuple[str, ...]:
