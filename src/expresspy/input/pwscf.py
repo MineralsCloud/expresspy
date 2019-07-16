@@ -23,5 +23,24 @@ class PWscfInput(object):
     kpoints: KPointsCard = attrib(default=None)
     cellparameters: CellParametersCard = attrib(default=None)
 
+    @property
+    def namelists(self):
+        return {
+            "control": self.control,
+            "system": self.system,
+            "electrons": self.electrons,
+            "ions": self.ions,
+            "cell": self.cell
+        }
+
+    @property
+    def cards(self):
+        return {
+            "atomicspecies": self.atomicspecies,
+            "atomicpositions": self.atomicpositions,
+            "kpoints": self.kpoints,
+            "cellparameters": self.cellparameters
+        }
+
     def to_dict(self):
         return attr.asdict(self)
