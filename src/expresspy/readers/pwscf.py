@@ -134,33 +134,12 @@ class PWscfInputReader(object):
         else:
             return tuple(keys)
 
-    def __get_card(self, identifier) -> Optional[List[str]]:
+    def get_card(self, identifier) -> Optional[List[str]]:
         if identifier in self.cards_found:
             begin, end = self.get_card_identifier_positions()[identifier]
             return re.split(self.newline, self.text_content[begin:end])
         else:
             warnings.warn("Identifier '{0}' is not found in input!".format(identifier), stacklevel=2)
-
-    def get_atomic_species(self):
-        return self.__get_card('ATOMIC_SPECIES')
-
-    def get_atomic_positions(self):
-        return self.__get_card('ATOMIC_POSITIONS')
-
-    def get_k_points(self):
-        return self.__get_card('K_POINTS')
-
-    def get_cell_parameters(self):
-        return self.__get_card('CELL_PARAMETERS')
-
-    def get_occupations(self):
-        return self.__get_card('OCCUPATIONS')
-
-    def get_constraints(self):
-        return self.__get_card('CONSTRAINTS')
-
-    def get_atomic_forces(self):
-        return self.__get_card('ATOMIC_FORCES')
 
     def read_namelists(self):
         """
@@ -171,7 +150,7 @@ class PWscfInputReader(object):
         return OrderedDict(f90nml.read(self.input))
 
     def read_atomic_species(self):
-        s: Optional[List[str]] = self.get_atomic_species()
+        s: Optional[List[str]] = self.get_card("ATOMIC_SPECIES")
         if not s:  # If the returned result is ``None``.
             warnings.warn("'ATOMIC_SPECIES' not found in input!", stacklevel=2)
         else:
@@ -189,7 +168,7 @@ class PWscfInputReader(object):
             return AtomicSpeciesCard(data=atomic_species)
 
     def read_atomic_positions(self):
-        s: Optional[List[str]] = self.get_atomic_positions()
+        s: Optional[List[str]] = self.get_card("ATOMIC_POSITIONS")
         if not s:  # If the returned result is ``None``.
             warnings.warn("'ATOMIC_POSITIONS' not found in input!", stacklevel=2)
         else:
@@ -236,7 +215,7 @@ class PWscfInputReader(object):
         ['crystal', 'crystal', 'crystal', 'crystal', 'crystal', '', '']
         :return: a named tuple defined above
         """
-        s: Optional[List[str]] = self.get_k_points()
+        s: Optional[List[str]] = self.get_card("K_POINTS")
         title_line = s[0]
         match = re.match("K_POINTS\s*(?:[({])?\s*(\w*)\s*(?:[)}])?", title_line, flags=re.IGNORECASE)
         if match is None:
@@ -266,11 +245,11 @@ class PWscfInputReader(object):
         the real cell parameters!
         :return: a numpy array that stores the cell parameters
         """
-        if not self.get_cell_parameters():  # If returned result is ``None``.
+        if not self.get_card('CELL_PARAMETERS'):  # If returned result is ``None``.
             warnings.warn("'CELL_PARAMETERS' not found in input!", stacklevel=2)
         else:
             cell_params = []
-            title_line = self.get_cell_parameters()[0]
+            title_line = self.get_card('CELL_PARAMETERS')[0]
             match = re.match("CELL_PARAMETERS\s*{?\s*(\w*)\s*}?", title_line, re.IGNORECASE)
             if match is None:
                 # The first line should be 'CELL_PARAMETERS blahblahblah', if it is not, either the regular expression
@@ -281,7 +260,7 @@ class PWscfInputReader(object):
                 warnings.warn('Not specifying unit is DEPRECATED and will no longer be allowed in the future!',
                               category=DeprecationWarning)
                 option = 'bohr'
-            for line in self.get_cell_parameters()[1:]:
+            for line in self.get_card('CELL_PARAMETERS')[1:]:
                 if line.strip() == '/':
                     raise RuntimeError('Do not start any line in cards with a "/" character!')
                 if re.match("(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*", line.strip()):
