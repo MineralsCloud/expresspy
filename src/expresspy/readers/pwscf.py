@@ -25,7 +25,7 @@ class PWscfInputReader(object):
     This class reads a standard Quantum ESPRESSO PWscf input file or string in, and read it.
     """
 
-    def __init__(self, inp: Optional[str] = None, **kwargs):
+    def __init__(self, inp: Optional[str] = None):
         self.newline = "[\r\n,]"  # TODO: This will fail when ',' is inside a value of a parameter.
         self.namelist_sep = r"/\s*[\r\n]"
         self.input = inp
