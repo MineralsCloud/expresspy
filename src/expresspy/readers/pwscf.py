@@ -7,7 +7,7 @@ import operator
 import re
 import warnings
 from collections import namedtuple, OrderedDict
-from typing import *
+from typing import List, Tuple, MutableMapping, Optional
 
 import f90nml
 import numpy as np
@@ -15,17 +15,25 @@ from expresspy.cards import MonkhorstPackGrid, AtomicSpecies, AtomicPosition, Ce
     KPointsCard, GammaPoint, AtomicSpeciesCard, AtomicPositionCard
 
 
+def namelist_identifiers() -> Tuple[str, ...]:
+    return '&CONTROL', '&SYSTEM', '&ELECTRONS', '&IONS', '&CELL'
+
+
+def card_identifiers() -> Tuple[str, ...]:
+    return 'ATOMIC_SPECIES', 'ATOMIC_POSITIONS', 'K_POINTS', 'CELL_PARAMETERS', 'OCCUPATIONS', 'CONSTRAINTS', 'ATOMIC_FORCES'
+
+
 class RangeIndices(namedtuple('RangeIndices', ['begin', 'end'])):
     def __str__(self) -> str:
         return "'begin: {0}, end: {1}'".format(self.begin, self.end)
 
 
-class PWscfInputLexer:
+class PWscfInputReader(object):
     """
-    This class reads a standard Quantum ESPRESSO PWscf input file or string in, and lex it.
+    This class reads a standard Quantum ESPRESSO PWscf input file or string in, and read it.
     """
 
-    def __init__(self, inp: Optional[str] = None, **kwargs):
+    def __init__(self, inp: Optional[str] = None):
         self.newline = "[\r\n,]"  # TODO: This will fail when ',' is inside a value of a parameter.
         self.namelist_sep = r"/\s*[\r\n]"
         self.input = inp
@@ -34,14 +42,6 @@ class PWscfInputLexer:
     def text_content(self):
         with open(self.input) as f:
             return io.StringIO(f.read()).getvalue()
-
-    @property
-    def namelist_identifiers(self) -> Tuple[str, ...]:
-        return '&CONTROL', '&SYSTEM', '&ELECTRONS', '&IONS', '&CELL'
-
-    @property
-    def card_identifiers(self) -> Tuple[str, ...]:
-        return 'ATOMIC_SPECIES', 'ATOMIC_POSITIONS', 'K_POINTS', 'CELL_PARAMETERS', 'OCCUPATIONS', 'CONSTRAINTS', 'ATOMIC_FORCES'
 
     def get_namelist_identifier_positions(self, pos: int = 0, include_heading: bool = True,
                                           include_ending: bool = False) -> MutableMapping[str, RangeIndices]:
@@ -58,7 +58,7 @@ class PWscfInputLexer:
         :return:
         """
         match_records = dict()
-        identifiers: Tuple[str, ...] = self.namelist_identifiers
+        identifiers: Tuple[str, ...] = namelist_identifiers()
         s: str = self.text_content
         for pattern in identifiers:
             # ``re.compile`` will produce a regular expression object, on which we can use its ``search`` method.
@@ -87,7 +87,7 @@ class PWscfInputLexer:
         :return:
         """
         match_records = dict()
-        identifiers: Tuple[str, ...] = self.card_identifiers
+        identifiers: Tuple[str, ...] = card_identifiers()
         s: str = self.text_content
         if not pos:
             pos = list(self.get_namelist_identifier_positions().values())[-1].end
@@ -114,7 +114,7 @@ class PWscfInputLexer:
         if not isempty({"&CONTROL", "&SYSTEM", "&ELECTRONS"}.difference(set(keys))):
             raise RuntimeError("Namelists must contain 'CONTROL', 'SYSTEM' and 'ELECTRONS'!")
         for i, k in enumerate(keys):
-            if not k == self.namelist_identifiers[i]:
+            if not k == namelist_identifiers()[i]:
                 # Namelists must appear in the order given below.
                 raise RuntimeError("Namelists must be in order 'CONTROL', 'SYSTEM', 'ELECTRONS', 'IONS', 'CELL'!")
         else:
@@ -134,35 +134,14 @@ class PWscfInputLexer:
         else:
             return tuple(keys)
 
-    def __get_card(self, identifier) -> Optional[List[str]]:
+    def get_card(self, identifier) -> Optional[List[str]]:
         if identifier in self.cards_found:
             begin, end = self.get_card_identifier_positions()[identifier]
             return re.split(self.newline, self.text_content[begin:end])
         else:
             warnings.warn("Identifier '{0}' is not found in input!".format(identifier), stacklevel=2)
 
-    def get_atomic_species(self):
-        return self.__get_card('ATOMIC_SPECIES')
-
-    def get_atomic_positions(self):
-        return self.__get_card('ATOMIC_POSITIONS')
-
-    def get_k_points(self):
-        return self.__get_card('K_POINTS')
-
-    def get_cell_parameters(self):
-        return self.__get_card('CELL_PARAMETERS')
-
-    def get_occupations(self):
-        return self.__get_card('OCCUPATIONS')
-
-    def get_constraints(self):
-        return self.__get_card('CONSTRAINTS')
-
-    def get_atomic_forces(self):
-        return self.__get_card('ATOMIC_FORCES')
-
-    def lex_namelist(self):
+    def read_namelists(self):
         """
         A generic method to read a namelist.
         Note you cannot write more than one parameter in each line!
@@ -170,8 +149,8 @@ class PWscfInputLexer:
         """
         return OrderedDict(f90nml.read(self.input))
 
-    def lex_atomic_species(self):
-        s: Optional[List[str]] = self.get_atomic_species()
+    def read_atomic_species(self):
+        s: Optional[List[str]] = self.get_card("ATOMIC_SPECIES")
         if not s:  # If the returned result is ``None``.
             warnings.warn("'ATOMIC_SPECIES' not found in input!", stacklevel=2)
         else:
@@ -188,8 +167,8 @@ class PWscfInputLexer:
                     atomic_species.append(AtomicSpecies(name, mass, pseudopotential))
             return AtomicSpeciesCard(data=atomic_species)
 
-    def lex_atomic_positions(self):
-        s: Optional[List[str]] = self.get_atomic_positions()
+    def read_atomic_positions(self):
+        s: Optional[List[str]] = self.get_card("ATOMIC_POSITIONS")
         if not s:  # If the returned result is ``None``.
             warnings.warn("'ATOMIC_POSITIONS' not found in input!", stacklevel=2)
         else:
@@ -226,7 +205,7 @@ class PWscfInputLexer:
             return AtomicPositionCard(option=option, data=atomic_positions)
 
     # TODO: finish this method
-    def lex_k_points(self):
+    def read_kpoints(self):
         """
         Find 'K_POINTS' line in the file, and read the k-mesh.
         We allow options and comments on the same line as 'K_POINTS':
@@ -236,7 +215,7 @@ class PWscfInputLexer:
         ['crystal', 'crystal', 'crystal', 'crystal', 'crystal', '', '']
         :return: a named tuple defined above
         """
-        s: Optional[List[str]] = self.get_k_points()
+        s: Optional[List[str]] = self.get_card("K_POINTS")
         title_line = s[0]
         match = re.match("K_POINTS\s*(?:[({])?\s*(\w*)\s*(?:[)}])?", title_line, flags=re.IGNORECASE)
         if match is None:
@@ -260,17 +239,17 @@ class PWscfInputLexer:
         else:
             raise ValueError("Unknown option '{0}' given!".format(option))
 
-    def lex_cell_parameters(self):
+    def read_cellparameters(self):
         """
         Read 3 lines that follows 'CELL_PARAMETERS' string, so there must be no empty line between 'CELL_PARAMETERS' and
         the real cell parameters!
         :return: a numpy array that stores the cell parameters
         """
-        if not self.get_cell_parameters():  # If returned result is ``None``.
+        if not self.get_card('CELL_PARAMETERS'):  # If returned result is ``None``.
             warnings.warn("'CELL_PARAMETERS' not found in input!", stacklevel=2)
         else:
             cell_params = []
-            title_line = self.get_cell_parameters()[0]
+            title_line = self.get_card('CELL_PARAMETERS')[0]
             match = re.match("CELL_PARAMETERS\s*{?\s*(\w*)\s*}?", title_line, re.IGNORECASE)
             if match is None:
                 # The first line should be 'CELL_PARAMETERS blahblahblah', if it is not, either the regular expression
@@ -281,7 +260,7 @@ class PWscfInputLexer:
                 warnings.warn('Not specifying unit is DEPRECATED and will no longer be allowed in the future!',
                               category=DeprecationWarning)
                 option = 'bohr'
-            for line in self.get_cell_parameters()[1:]:
+            for line in self.get_card('CELL_PARAMETERS')[1:]:
                 if line.strip() == '/':
                     raise RuntimeError('Do not start any line in cards with a "/" character!')
                 if re.match("(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*", line.strip()):
