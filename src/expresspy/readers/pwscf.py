@@ -7,7 +7,7 @@ import operator
 import re
 import warnings
 from collections import namedtuple, OrderedDict
-from typing import *
+from typing import List, Tuple, MutableMapping, Optional
 
 import f90nml
 import numpy as np
