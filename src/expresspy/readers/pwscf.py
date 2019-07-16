@@ -149,7 +149,7 @@ class PWscfInputReader(object):
         """
         return OrderedDict(f90nml.read(self.input))
 
-    def read_atomic_species(self):
+    def read_atomicspecies(self):
         s: Optional[List[str]] = self.get_card("ATOMIC_SPECIES")
         if not s:  # If the returned result is ``None``.
             warnings.warn("'ATOMIC_SPECIES' not found in input!", stacklevel=2)
@@ -167,7 +167,7 @@ class PWscfInputReader(object):
                     atomic_species.append(AtomicSpecies(name, mass, pseudopotential))
             return AtomicSpeciesCard(data=atomic_species)
 
-    def read_atomic_positions(self):
+    def read_atomicpositions(self):
         s: Optional[List[str]] = self.get_card("ATOMIC_POSITIONS")
         if not s:  # If the returned result is ``None``.
             warnings.warn("'ATOMIC_POSITIONS' not found in input!", stacklevel=2)
