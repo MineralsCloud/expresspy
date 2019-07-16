@@ -20,7 +20,7 @@ class RangeIndices(namedtuple('RangeIndices', ['begin', 'end'])):
         return "'begin: {0}, end: {1}'".format(self.begin, self.end)
 
 
-class PWscfInputLexer:
+class PWscfInputLexer(object):
     """
     This class reads a standard Quantum ESPRESSO PWscf input file or string in, and lex it.
     """
