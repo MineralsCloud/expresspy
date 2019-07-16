@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Dict
-
 import attr
 from attr import attrib, attrs
-from expresspy.cards import AtomicPositionCard, AtomicSpeciesCard, Card, KPointsCard
-from expresspy.namelists import (ControlNamelist, ElectronsNamelist, Namelist,
-                                 SystemNamelist)
+from expresspy.cards import AtomicPositionCard, AtomicSpeciesCard, KPointsCard, CellParametersCard
+from expresspy.namelists import ControlNamelist, ElectronsNamelist, SystemNamelist, IonsNamelist, CellNamelist
 
 __all__ = [
     'PWscfInput'
@@ -16,26 +13,15 @@ __all__ = [
 
 @attrs
 class PWscfInput(object):
-    namelists: Dict[str, Namelist] = attrib(factory=dict)
-    cards: Dict[str, Card] = attrib(factory=dict)
-
-    @namelists.validator
-    def _check_must_contain(self, attribute, value):
-        if {"CONTROL", "SYSTEM", "ELECTRONS"}.difference(set(value.keys())) != set():
-            raise ValueError
-        if not all([isinstance(value["CONTROL"], ControlNamelist),
-                    isinstance(value["SYSTEM"], SystemNamelist),
-                    isinstance(value["ELECTRONS"], ElectronsNamelist)]):
-            raise ValueError
-
-    @cards.validator
-    def _check_must_contain(self, attribute, value):
-        if {"ATOMIC_SPECIES", "ATOMIC_POSITIONS", "K_POINTS"}.difference(set(value.keys())) != set():
-            raise ValueError
-        if not all([isinstance(value["ATOMIC_SPECIES"], AtomicSpeciesCard),
-                    isinstance(value["ATOMIC_POSITIONS"], AtomicPositionCard),
-                    isinstance(value["K_POINTS"], KPointsCard)]):
-            raise ValueError
+    control: ControlNamelist = attrib(default=ControlNamelist())
+    system: SystemNamelist = attrib(default=SystemNamelist())
+    electrons: ElectronsNamelist = attrib(default=ElectronsNamelist())
+    ions: IonsNamelist = attrib(default=IonsNamelist())
+    cell: CellNamelist = attrib(default=CellNamelist())
+    atomicspecies: AtomicSpeciesCard = attrib(default=None)
+    atomicpositions: AtomicPositionCard = attrib(default=None)
+    kpoints: KPointsCard = attrib(default=None)
+    cellparameters: CellParametersCard = attrib(default=None)
 
     def to_dict(self):
         return attr.asdict(self)
