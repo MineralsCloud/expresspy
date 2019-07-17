@@ -269,6 +269,12 @@ class PWscfInputReader(object):
                     cell_params.append([v1, v2, v3])
             return CellParametersCard.from_array(option, np.array(cell_params))
 
+    def create_input_object(self):
+        namelists: MutableMapping = self.read_namelists()
+        return PWscfInput(**namelists, atomicspecies=self.read_atomicspecies(),
+                          atomicpositions=self.read_atomicpositions(), kpoints=self.read_kpoints(),
+                          cellparameters=self.read_cellparameters())
+
 
 def isempty(iterable):
     if len(iterable) == 0:
