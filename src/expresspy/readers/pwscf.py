@@ -11,9 +11,10 @@ from typing import List, Tuple, MutableMapping, Optional
 
 import f90nml
 import numpy as np
-from expresspy.cards import MonkhorstPackGrid, AtomicSpecies, AtomicPosition, CellParametersCard, \
+
+from ..cards import MonkhorstPackGrid, AtomicSpecies, AtomicPosition, CellParametersCard, \
     KPointsCard, GammaPoint, AtomicSpeciesCard, AtomicPositionCard
-from expresspy.input import PWscfInput
+from ..input import PWscfInput
 
 
 def namelist_identifiers() -> Tuple[str, ...]:

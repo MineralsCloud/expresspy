@@ -4,7 +4,8 @@
 from typing import List
 
 from attr import attrs, attrib
-from expresspy.namelists import Namelist
+
+from ..namelists import Namelist
 
 __all__ = [
     'INPUTPHNamelist'
