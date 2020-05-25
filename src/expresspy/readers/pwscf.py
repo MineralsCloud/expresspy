@@ -14,7 +14,7 @@ import numpy as np
 
 from ..cards import MonkhorstPackGrid, AtomicSpecies, AtomicPosition, CellParametersCard, \
     KPointsCard, GammaPoint, AtomicSpeciesCard, AtomicPositionCard
-from ..input import PWscfInput
+from ..inputs import PWscfInput
 
 
 def namelist_identifiers() -> Tuple[str, ...]:
