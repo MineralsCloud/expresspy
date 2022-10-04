@@ -3,8 +3,9 @@
 
 import attr
 from attr import attrib, attrs
-from expresspy.cards import AtomicPositionCard, AtomicSpeciesCard, KPointsCard, CellParametersCard
-from expresspy.namelists import ControlNamelist, ElectronsNamelist, SystemNamelist, IonsNamelist, CellNamelist
+
+from ..cards import AtomicPositionCard, AtomicSpeciesCard, KPointsCard, CellParametersCard
+from ..namelists import ControlNamelist, ElectronsNamelist, SystemNamelist, IonsNamelist, CellNamelist
 
 __all__ = [
     'PWscfInput'

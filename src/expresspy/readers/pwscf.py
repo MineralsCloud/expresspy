@@ -11,9 +11,10 @@ from typing import List, Tuple, MutableMapping, Optional
 
 import f90nml
 import numpy as np
-from expresspy.cards import MonkhorstPackGrid, AtomicSpecies, AtomicPosition, CellParametersCard, \
+
+from ..cards import MonkhorstPackGrid, AtomicSpecies, AtomicPosition, CellParametersCard, \
     KPointsCard, GammaPoint, AtomicSpeciesCard, AtomicPositionCard
-from expresspy.input import PWscfInput
+from ..inputs import PWscfInput
 
 
 def namelist_identifiers() -> Tuple[str, ...]:
@@ -268,6 +269,12 @@ class PWscfInputReader(object):
                     v1, v2, v3 = re.match("(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*(-?\d*\.\d*)\s*", line.strip()).groups()
                     cell_params.append([v1, v2, v3])
             return CellParametersCard.from_array(option, np.array(cell_params))
+
+    def create_input_object(self):
+        namelists: MutableMapping = self.read_namelists()
+        return PWscfInput(**namelists, atomicspecies=self.read_atomicspecies(),
+                          atomicpositions=self.read_atomicpositions(), kpoints=self.read_kpoints(),
+                          cellparameters=self.read_cellparameters())
 
 
 def isempty(iterable):

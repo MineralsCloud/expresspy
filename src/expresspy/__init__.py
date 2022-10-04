@@ -9,7 +9,3 @@ except DistributionNotFound:
     __version__ = 'unknown'
 finally:
     del get_distribution, DistributionNotFound
-
-import expresspy.namelists
-import expresspy.cards
-import expresspy.input

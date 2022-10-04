@@ -5,7 +5,7 @@
 from typing import Optional
 
 import attr
-from attr import attrs, attrib
+from attr import attrs
 
 __all__ = [
     'Card'

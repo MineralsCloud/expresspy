@@ -11,9 +11,10 @@ import numpy as np
 from attr import attrib, attrs
 from attr.validators import instance_of, deep_iterable
 from crystals import Lattice
-from expresspy.cards.base import Card
-from expresspy.typeconversion import to_fortran
 from singleton_decorator import singleton
+
+from .base import Card
+from ..typeconversion import to_fortran
 
 __all__ = [
     'AtomicSpecies',

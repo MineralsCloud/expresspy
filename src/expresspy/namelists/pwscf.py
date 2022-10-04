@@ -4,7 +4,8 @@
 from typing import List
 
 from attr import attrib, attrs
-from expresspy.namelists import Namelist
+
+from ..namelists import Namelist
 
 __all__ = [
     'ControlNamelist',
